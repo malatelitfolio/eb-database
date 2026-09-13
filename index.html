@@ -459,6 +459,98 @@
     .meet-tooltip .tt-names { color: var(--text-muted); font-weight: 600; font-size: 0.72rem; }
     .mt-cell.mine { background: var(--accent); border-color: var(--accent); }
     .mt-cell.mine:hover { filter: brightness(1.1); }
+    /* ---------- Plantilla weekly grid ---------- */
+    .pt-wrap { min-width: 560px; }
+    .pt-grid {
+        display: grid; gap: 3px; min-width: 0;
+        user-select: none; -webkit-user-select: none;
+        touch-action: none; overflow: hidden; contain: layout style;
+    }
+    .pt-head { text-align: center; font-size: 0.7rem; font-weight: 800; padding: 4px 2px; border-radius: 6px; }
+    .pt-time { font-size: 0.6rem; color: var(--text-muted); text-align: right; padding-right: 5px; align-self: center; white-space: nowrap; }
+    .pt-cell {
+        height: 22px; border-radius: 5px; background: var(--surface-card);
+        border: 1px solid var(--border-soft); cursor: pointer;
+        transition: transform 0.15s cubic-bezier(0.34, 1.3, 0.64, 1), box-shadow 0.15s ease;
+        will-change: transform;
+    }
+    .pt-cell:hover { transform: scale(1.04); z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.10); }
+    .pt-cell.busy { background: rgba(239,68,68,0.30); border-color: rgba(239,68,68,0.65); }
+    .pt-cell.busy:hover { filter: brightness(1.08); }
+    .pt-cell.dragging { transform: scale(1.05); z-index: 3; box-shadow: 0 2px 8px rgba(100,116,139,0.25); background: #e2e8f0; border-color: #94a3b8; }
+    .pt-cell.busy.dragging { background: var(--danger); border-color: #dc2626; }
+    /* ---------- Custom single-select dropdown (no native <select>) ---------- */
+    .csel { position: relative; }
+    .csel-trigger {
+        display: flex; align-items: center; justify-content: space-between; gap: 8px;
+        width: 100%; padding: 9px 12px; border: 1px solid var(--border-soft); border-radius: 9px;
+        font-family: inherit; font-size: 0.85rem; background: var(--bg-canvas); color: var(--text-main);
+        cursor: pointer; text-align: left; min-height: 40px;
+    }
+    .csel-trigger:hover { border-color: var(--dlsu-green); }
+    .csel-trigger .csel-value { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .csel-trigger .csel-arrow {
+        flex-shrink: 0; transition: transform 0.15s ease; color: var(--text-muted);
+        width: 12px; height: 12px;
+    }
+    .csel.open .csel-arrow { transform: rotate(180deg); }
+    .csel-panel {
+        position: absolute; top: 100%; left: 0; right: 0; z-index: 60;
+        background: var(--surface-solid); border: 1px solid var(--border-soft); border-radius: 10px;
+        box-shadow: var(--shadow-lg); max-height: 240px; overflow-y: auto; padding: 6px;
+        margin-top: 4px;
+    }
+    .csel-panel .csel-opt {
+        display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px;
+        cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: background 0.1s;
+    }
+    .csel-panel .csel-opt:hover { background: var(--bg-canvas); }
+    .csel-panel .csel-opt.selected { background: rgba(10,92,54,0.1); color: var(--dlsu-green); }
+    .csel-panel .csel-empty { padding: 8px 10px; font-size: 0.78rem; color: var(--text-muted); }
+    /* Compact inline variant (used in meet finalize row) */
+    .csel.compact .csel-trigger { width: auto; min-width: 88px; padding: 6px 10px; font-size: 0.78rem; min-height: 32px; border-radius: 8px; }
+    .csel.compact .csel-panel { min-width: 132px; }
+    /* ---------- Meet editor smart matching ---------- */
+    .matcher-card { border: 1px solid var(--border-soft); border-radius: 10px; padding: 10px 12px; background: var(--bg-canvas); margin-top: 10px; }
+    .matcher-title { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .matcher-best { display: flex; flex-wrap: wrap; gap: 6px; }
+    .matcher-slot {
+        display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px; border-radius: 100px;
+        border: 1px solid var(--dlsu-green); color: var(--dlsu-green); background: rgba(10,92,54,0.08);
+        font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.12s;
+    }
+    .matcher-slot:hover { background: var(--dlsu-green); color: #fff; }
+    .matcher-slot .matcher-num { font-size: 0.68rem; font-weight: 800; }
+    .matcher-slot.conflicted { border-color: rgba(217,119,6,0.6); color: var(--text-main); background: rgba(217,119,6,0.12); }
+    .matcher-slot.conflicted:hover { background: rgba(217,119,6,0.25); color: var(--text-main); }
+    .matcher-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 7px; line-height: 1.45; }
+    .conflict-strip { display: flex; flex-direction: column; gap: 5px; margin-top: 9px; }
+    .conflict-tag {
+        display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 700;
+        color: var(--text-main); background: rgba(217,119,6,0.12); border: 1px solid rgba(217,119,6,0.45);
+        border-radius: 8px; padding: 5px 9px; line-height: 1.35;
+    }
+    .conflict-tag.ok { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.4); color: var(--text-main); }
+    /* ---------- In-app plantilla conflict banner ---------- */
+    .conflict-banner-wrap { position: fixed; top: 0; left: 0; right: 0; z-index: 400; display: flex; justify-content: center; padding: 10px 14px 0; pointer-events: none; }
+    .conflict-banner {
+        pointer-events: auto; max-width: 520px; width: 100%;
+        background: var(--surface-solid); border: 1px solid rgba(217,119,6,0.5); border-radius: 12px;
+        box-shadow: var(--shadow-lg); padding: 12px 14px; font-size: 0.82rem; color: var(--text-main);
+        animation: conflictIn 0.28s cubic-bezier(0.32, 0.72, 0.34, 1);
+    }
+    @keyframes conflictIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    .conflict-banner-head { display: flex; align-items: center; gap: 8px; font-weight: 800; margin-bottom: 7px; color: var(--text-main); }
+    .conflict-banner-head .cb-close { margin-left: auto; border: none; background: none; cursor: pointer; color: var(--text-muted); font-size: 1.1rem; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+    .conflict-banner-head .cb-close:hover { background: var(--bg-canvas); color: var(--danger); }
+    .conflict-banner-item { display: flex; align-items: center; gap: 8px; padding: 5px 2px; border-top: 1px solid var(--border-soft); }
+    .conflict-banner-item .cb-main { flex: 1; min-width: 0; }
+    .conflict-banner-item .cb-title { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .conflict-banner-item .cb-sub { font-size: 0.72rem; color: var(--text-muted); }
+    .conflict-banner-item .cb-view { border: none; background: rgba(10,92,54,0.12); color: var(--dlsu-green); font-weight: 800; font-size: 0.72rem; padding: 4px 9px; border-radius: 100px; cursor: pointer; flex-shrink: 0; }
+    .conflict-banner-item .cb-view:hover { background: var(--dlsu-green); color: #fff; }
+    .conflict-banner-dismiss { margin-top: 8px; text-align: right; }
+    .conflict-banner-dismiss button { border: none; background: none; color: var(--text-muted); font-size: 0.7rem; font-weight: 700; cursor: pointer; text-decoration: underline; }
     .meet-actions-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .mm-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
     .mm-by { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
@@ -1180,6 +1272,7 @@
                     <div class="nav-sep"></div>
                     <button data-click="showPanel('overview')">Overview</button>
                     <button data-click="showPanel('meets')">Meets</button>
+                    <button data-click="showPanel('plantilla')">Plantilla</button>
                     <button data-click="showPanel('calendar')">Calendar</button>
                     <button data-click="showPanel('links')">Links Hub</button>
                     <button data-click="showPanel('members')">EB Members</button>
@@ -1224,16 +1317,43 @@
 
             <div class="toolbar">
                 <button class="btn btn-primary" data-click="openMeetEditor(null)">+ New Meet</button>
-                <button class="btn" data-click="openCommitmentModal(null)">Add Commitment</button>
             </div>
 
             <div id="meetsList" class="item-list"><div class="empty-state">No meets yet.</div></div>
+        </section>
+
+        <!-- ===== PLANTILLA ===== -->
+        <section class="hidden" id="panelPlantilla">
+            <div class="panel-heading">
+                <span>Plantilla</span>
+            </div>
+
+            <div class="toolbar">
+                <button class="btn btn-primary" data-once data-click="savePlantilla()">Save Plantilla</button>
+                <button class="btn" data-click="clearPlantilla()">Clear Grid</button>
+                <span class="sub" style="margin-left:auto;" id="plantillaOwnerLabel"></span>
+            </div>
+
+            <div id="plantillaMemberRow" class="form-group hidden" style="max-width:320px;margin-bottom:12px;">
+                <label>View member</label>
+                <div id="plantillaMemberCustom"></div>
+            </div>
+
+            <div class="hint" style="margin-bottom:8px;">Click or drag across cells to paint your busy blocks. Free time is left empty.</div>
+            <div class="mt-legend" style="margin-top:10px;margin-bottom:12px;">
+                <span class="mt-legend-label">Free</span>
+                <span class="mt-legend-swatch" style="background:var(--surface-card);border:1px solid rgba(100,116,139,0.3);"></span>
+                <span class="mt-legend-swatch" style="background:rgba(239,68,68,0.35);border:1px solid rgba(239,68,68,0.65);"></span>
+                <span class="mt-legend-label">Busy</span>
+            </div>
+            <div class="avail-scroll"><div id="plantillaGrid"></div></div>
 
             <div style="margin-top:24px;">
                 <div class="panel-heading">
                     <span>Commitments</span>
                 </div>
                 <div id="commitmentList" class="item-list"><div class="empty-state">No commitments recorded.</div></div>
+                <button class="btn btn-sm" data-click="openCommitmentModal(null)" style="margin-top:10px;">+ Add Commitment</button>
             </div>
         </section>
 
@@ -1508,11 +1628,12 @@
                         <span class="qmark" data-tip="The availability grid only covers slots inside this window. This is not YOUR availability — you can input your availability later.">?</span>
                     </label>
                     <div style="display:flex;align-items:center;gap:8px;">
-                        <input type="time" id="meetTimeStart" value="07:00" step="1800">
+                        <div id="meetTimeStartWrap" style="flex:1;"></div>
                         <span style="font-size:0.85rem;color:var(--text-muted);">to</span>
-                        <input type="time" id="meetTimeEnd" value="22:00" step="1800">
+                        <div id="meetTimeEndWrap" style="flex:1;"></div>
                     </div>
                 </div>
+                <div id="meetMatcherWrap" style="margin-top:2px;"></div>
             </div>
             <div class="act-slide-foot">
                 <button class="btn" data-click="closeMeetEditor()">Cancel</button>
@@ -1577,7 +1698,7 @@
             <div class="modal-body">
                 <div class="form-group hidden" id="commitmentMemberRow">
                     <label>Member</label>
-                    <select id="commitmentMemberSelect"></select>
+                    <div id="commitmentMemberSelect"></div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -1586,9 +1707,7 @@
                     </div>
                     <div class="form-group">
                         <label>Type</label>
-                        <select id="commitmentType">
-                            <option>OJT</option><option>Practicum</option><option>Thesis</option><option>Org</option><option>Personal</option><option>Other</option>
-                        </select>
+                        <div id="commitmentType"></div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -1750,6 +1869,8 @@
     </div>
 
     <div class="toast" id="toast"></div>
+
+    <div class="conflict-banner-wrap hidden" id="conflictBannerWrap"></div>
 
     <!-- Filter sidebar -->
     <div class="filter-sidebar-overlay" id="filterSidebarOverlay" data-click="closeFilterSidebar()"></div>
@@ -2491,8 +2612,8 @@
     document.addEventListener("click", closeNavMenu);
 
     let currentPanel = "overview";
-    const VALID_PANELS = ["overview", "meets", "calendar", "links", "members"];
-    const _panelRendered = { overview: false, meets: false, calendar: false, links: false, members: false };
+    const VALID_PANELS = ["overview", "meets", "plantilla", "calendar", "links", "members"];
+    const _panelRendered = { overview: false, meets: false, plantilla: false, calendar: false, links: false, members: false };
 
     function markPanelsDirty() {
         Object.keys(_panelRendered).forEach(k => { _panelRendered[k] = false; });
@@ -2501,11 +2622,12 @@
     function showPanel(name) {
         currentPanel = name;
         try { localStorage.setItem("ebdb_last_panel", name); } catch (e) {}
-        ["panelOverview", "panelMeets", "panelCalendar", "panelLinks", "panelMembers"].forEach(id => $(id).classList.add("hidden"));
+        ["panelOverview", "panelMeets", "panelPlantilla", "panelCalendar", "panelLinks", "panelMembers"].forEach(id => $(id).classList.add("hidden"));
         closeNavMenu();
         const target = {
             "overview": "panelOverview",
             "meets": "panelMeets",
+            "plantilla": "panelPlantilla",
             "calendar": "panelCalendar",
             "links": "panelLinks",
             "members": "panelMembers"
@@ -2514,6 +2636,7 @@
             $(target).classList.remove("hidden");
             if (name === "overview" && !_panelRendered.overview) { renderOverview(); _panelRendered.overview = true; }
             if (name === "meets" && !_panelRendered.meets) { renderMeets(); _panelRendered.meets = true; }
+            if (name === "plantilla" && !_panelRendered.plantilla) { renderPlantillaPanel(); _panelRendered.plantilla = true; }
             if (name === "calendar" && !_panelRendered.calendar) { renderCalendarView(); _panelRendered.calendar = true; }
             if (name === "links" && !_panelRendered.links) { renderLinksHub(); _panelRendered.links = true; }
             if (name === "members" && !_panelRendered.members) { renderMembersPanel(); _panelRendered.members = true; }
@@ -2619,11 +2742,13 @@
         // on tab switch, so the hidden ones don't need refreshing here.
         if (currentPanel === "overview") renderOverview();
         else if (currentPanel === "meets") renderMeets();
+        else if (currentPanel === "plantilla") renderPlantillaPanel();
         else if (currentPanel === "calendar") renderCalendarView();
         else if (currentPanel === "links") renderLinksHub();
         else if (currentPanel === "members") renderMembersPanel();
         const mm = document.getElementById("meetModal");
         if (mm && !mm.classList.contains("hidden") && currentMeetId) renderMeetDetail();
+        renderPlantillaConflictNotifs();
     }
 
     // ============================================================
@@ -2652,6 +2777,7 @@
 
         renderOverviewQuickLinks();
         renderPendingNotif();
+        renderPlantillaConflictNotifs();
     }
 
     function renderOverviewQuickLinks() {
@@ -2735,7 +2861,6 @@
     function renderMeets() {
         if (!fullData) return;
         renderMeetsList();
-        renderCommitments();
     }
 
     function pendingMeetsForUser() {
@@ -2900,9 +3025,9 @@
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                     <span class="mm-k" style="display:inline;margin:0 2px 0 0;">Time</span>
-                    <select id="meetFinalStart">${slots.map(t => `<option value="${minToHHMM(t)}"${t === slots[0] ? " selected" : ""}>${escHtml(fmtTime(minToHHMM(t)))}</option>`).join("")}</select>
+                    ${cselHtml("meetFinalStart", slots.map(t => ({ value: minToHHMM(t), label: fmtTime(minToHHMM(t)) })), minToHHMM(slots[0]), true)}
                     <span class="sub" style="font-size:0.78rem;">to</span>
-                    <select id="meetFinalEnd">${(() => { let o = ""; for (let t = slots[0] + MEET_SLOT_MIN; t <= meetMinutes(m.timeEnd); t += MEET_SLOT_MIN) o += `<option value="${minToHHMM(t)}"${t === meetMinutes(m.timeEnd) ? " selected" : ""}>${escHtml(fmtTime(minToHHMM(t)))}</option>`; return o; })()}</select>
+                    ${cselHtml("meetFinalEnd", (function(){ const o=[]; for (let t=slots[0]+MEET_SLOT_MIN; t<=meetMinutes(m.timeEnd); t+=MEET_SLOT_MIN) o.push({value:minToHHMM(t),label:fmtTime(minToHHMM(t))}); return o;})(), minToHHMM(meetMinutes(m.timeEnd)), true)}
                     <button class="btn btn-primary btn-sm" data-once data-click="finalizeMeet('${m.id}')">Finalize</button>
                 </div>`;
             }
@@ -3149,6 +3274,548 @@
 
     window.addEventListener("blur", function () { meetDrag = null; });
 
+    // ============================================================
+    //  CUSTOM THEMED DROPDOWN (no native <select>)
+    // ============================================================
+    const _cselReg = {};
+    function cselArrow() {
+        return '<svg class="csel-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 4 6 8 10 4"/></svg>';
+    }
+    function cselHtml(id, options, value, compact) {
+        const cur = (options || []).find(o => o.value === value) || {};
+        const opts = options || [];
+        return `<div class="csel${compact ? " compact" : ""}" id="${id}">
+            <button type="button" class="csel-trigger" data-v="${escHtml(value)}">
+                <span class="csel-value">${escHtml(cur.label || "")}</span>
+                ${cselArrow()}
+            </button>
+            <div class="csel-panel hidden">${opts.length ? opts.map(o => `<div class="csel-opt${o.value === value ? " selected" : ""}" data-value="${escHtml(o.value)}" data-label="${escHtml(o.label)}">${escHtml(o.label)}</div>`).join("") : '<div class="csel-empty">No options</div>'}</div>
+        </div>`;
+    }
+    function cselValue(id) {
+        const el = document.getElementById(id);
+        if (!el) return "";
+        const tg = el.querySelector(".csel-trigger");
+        return tg ? (tg.getAttribute("data-v") || "") : "";
+    }
+    function cselSetValue(id, value, options) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const tg = el.querySelector(".csel-trigger");
+        const vu = el.querySelector(".csel-value");
+        if (tg) tg.setAttribute("data-v", value);
+        const matched = (options || []).find(o => o.value === value);
+        if (vu && matched) vu.textContent = matched.label;
+        if (el.querySelectorAll) el.querySelectorAll(".csel-opt").forEach(o => {
+            o.classList.toggle("selected", o.getAttribute("data-value") === String(value));
+        });
+    }
+    function bindCsel(id, options, onChange) {
+        _cselReg[id] = { options: options || [], onChange: onChange || null };
+    }
+    function renderCselAt(containerId, id, options, value, onChange, compact) {
+        const wrap = document.getElementById(containerId);
+        if (!wrap) return;
+        wrap.innerHTML = cselHtml(id, options, value, compact);
+        bindCsel(id, options, onChange);
+    }
+    function closeAllCsel() {
+        document.querySelectorAll(".csel.open").forEach(o => {
+            o.classList.remove("open");
+            const p = o.querySelector(".csel-panel");
+            if (p) p.classList.add("hidden");
+        });
+    }
+    document.addEventListener("pointerdown", function (ev) {
+        const csel = ev.target.closest ? ev.target.closest(".csel") : null;
+        document.querySelectorAll(".csel.open").forEach(o => {
+            if (o === csel) return;
+            o.classList.remove("open");
+            const p = o.querySelector(".csel-panel");
+            if (p) p.classList.add("hidden");
+        });
+        if (!csel) return;
+        const trigger = ev.target.closest ? ev.target.closest(".csel-trigger") : null;
+        if (trigger) {
+            ev.preventDefault();
+            const open = csel.classList.toggle("open");
+            const panel = csel.querySelector(".csel-panel");
+            if (panel) panel.classList.toggle("hidden", !open);
+            return;
+        }
+        const opt = ev.target.closest ? ev.target.closest(".csel-opt") : null;
+        if (opt) {
+            ev.preventDefault();
+            const id = csel.id;
+            const val = opt.getAttribute("data-value");
+            const label = opt.getAttribute("data-label");
+            const reg = _cselReg[id] || {};
+            cselSetValue(id, val);
+            closeAllCsel();
+            if (reg.onChange) reg.onChange(val, label);
+        }
+    });
+
+    // ============================================================
+    //  MEET TIME OPTIONS (30-min steps, whole day)
+    // ============================================================
+    function meetTimeOptions() {
+        const o = [];
+        for (let t = 0; t < 24 * 60; t += MEET_SLOT_MIN) o.push({ value: minToHHMM(t), label: fmtTime(minToHHMM(t)) });
+        return o;
+    }
+
+    // ============================================================
+    //  PLANTILLA — weekly recurring availability grid
+    // ============================================================
+    const PLANTILLA_DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const PLANTILLA_START_MIN = 7 * 60;
+    const PLANTILLA_END_MIN = 23 * 60;
+    const PLANTILLA_STEP_MIN = 30;
+
+    let plantillaViewEmail = "";
+    let plantillaSet = new Set();
+    let plantillaDrag = null;
+    let plantillaSaveBusy = false;
+    let _conflictNotifSig = null;
+
+    function capDay(d) { return d.charAt(0) + d.slice(1).toLowerCase(); }
+    function plantillaKey(day, startMin) { return day + "-" + minToHHMM(startMin); }
+    function plantillaWeekdayFor(iso) {
+        const di = dayIdxFromISO(iso);
+        return (di >= 1 && di <= 6) ? PLANTILLA_DAYS[di - 1] : "";
+    }
+    function plantillaGridFor(email) {
+        const rec = (fullData.plantillas || []).find(p => p.email === email);
+        const grid = (rec && rec.grid) || {};
+        const out = {};
+        PLANTILLA_DAYS.forEach(d => { out[d] = Array.isArray(grid[d]) ? grid[d].slice() : []; });
+        return out;
+    }
+    function plantillaPerson() {
+        const email = plantillaViewEmail || userEmail || "";
+        const rec = (fullData.plantillas || []).find(p => p.email === email);
+        return { email: email, name: (rec && (rec.fullName || rec.email)) || email };
+    }
+
+    function plantillaScheduleText(email) {
+        const grid = plantillaGridFor(email);
+        const parts = [];
+        PLANTILLA_DAYS.forEach(d => {
+            const times = (grid[d] || []).slice().sort();
+            if (!times.length) return;
+            const ranges = [];
+            let curS = null, prevM = null;
+            times.forEach(t => {
+                const m = hhmmToMin(t);
+                if (curS === null) { curS = prevM = m; }
+                else if (m === prevM + PLANTILLA_STEP_MIN) { prevM = m; }
+                else {
+                    ranges.push(fmtTime(minToHHMM(curS)) + "–" + fmtTime(minToHHMM(prevM + PLANTILLA_STEP_MIN)));
+                    curS = prevM = m;
+                }
+            });
+            if (curS !== null) ranges.push(fmtTime(minToHHMM(curS)) + "–" + fmtTime(minToHHMM(prevM + PLANTILLA_STEP_MIN)));
+            parts.push(capDay(d) + " " + ranges.join(", "));
+        });
+        if (!parts.length) return "No busy blocks";
+        const full = parts.join(" · ");
+        return full.length > 160 ? parts.slice(0, 3).join(" · ") + " …" : full;
+    }
+
+    function updatePlantillaOwnerLabel() {
+        const label = $("plantillaOwnerLabel");
+        if (!label) return;
+        const email = plantillaViewEmail || userEmail || "";
+        const person = plantillaPerson();
+        const sched = plantillaScheduleText(email);
+        if (email === userEmail) { label.textContent = ""; return; }
+        const viewName = /@/.test(person.name) ? "" : person.name + " · ";
+        label.textContent = "Viewing " + viewName + sched + " — read-only";
+    }
+
+    // One normalized lookup: { email: { day: Set<startMinutes> } }
+    function plantillaBusyMap() {
+        const map = {};
+        (fullData.plantillas || []).forEach(p => {
+            const day = {};
+            PLANTILLA_DAYS.forEach(d => {
+                day[d] = new Set();
+                (p.grid && Array.isArray(p.grid[d]) ? p.grid[d] : []).forEach(t => {
+                    const m = hhmmToMin(t);
+                    if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) day[d].add(m);
+                });
+            });
+            map[p.email] = { name: p.fullName || p.email, day: day };
+        });
+        return map;
+    }
+    function plantillaBusyAt(busyMap, email, day, startMin) {
+        const rec = busyMap[email];
+        return !!(rec && rec.day[day] && rec.day[day].has(startMin));
+    }
+
+    function plantillaRefreshSet() {
+        plantillaSet = new Set();
+        const grid = plantillaGridFor(plantillaPerson().email);
+        PLANTILLA_DAYS.forEach(d => (grid[d] || []).forEach(t => {
+            const m = hhmmToMin(t);
+            if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) plantillaSet.add(plantillaKey(d, m));
+        }));
+    }
+
+    function renderPlantillaPanel() {
+        if (!fullData) return;
+        const person = plantillaPerson();
+        plantillaViewEmail = person.email;
+        const row = $("plantillaMemberRow");
+        if (fullData.isManager) {
+            const opts = (fullData.members || []).filter(m => m.isActive)
+                .map(m => ({ value: m.email, label: (m.fullName || m.email) }))
+                .sort((a, b) => a.label.localeCompare(b.label));
+            if (!row.dataset.bound) {
+                row.classList.remove("hidden");
+                renderCselAt("plantillaMemberCustom", "plantillaMemberCsel", opts, plantillaViewEmail, function (val) {
+                    plantillaViewEmail = val;
+                    plantillaRefreshSet();
+                    renderPlantillaGrid();
+                    updatePlantillaOwnerLabel();
+                });
+                row.dataset.bound = "1";
+            } else {
+                cselSetValue("plantillaMemberCsel", plantillaViewEmail, opts);
+            }
+            updatePlantillaOwnerLabel();
+        } else if (plantillaViewEmail && plantillaViewEmail !== userEmail) {
+            plantillaViewEmail = userEmail;
+        }
+        plantillaRefreshSet();
+        renderPlantillaGrid();
+        renderCommitments();
+    }
+
+    function renderPlantillaGrid() {
+        const gridEl = $("plantillaGrid");
+        if (!gridEl) return;
+        const rowCount = (PLANTILLA_END_MIN - PLANTILLA_START_MIN) / PLANTILLA_STEP_MIN;
+        let html = '<div class="pt-wrap"><div class="pt-grid" id="ptGrid" style="grid-template-columns:64px repeat(6, minmax(44px, 1fr));">';
+        html += '<div></div>' + PLANTILLA_DAYS.map(d => `<div class="pt-head">${capDay(d)}</div>`).join("");
+        for (let si = 0; si < rowCount; si++) {
+            const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
+            html += `<div class="pt-time">${t % 60 === 0 ? escHtml(fmtTime(minToHHMM(t))) : ""}</div>`;
+            PLANTILLA_DAYS.forEach((d, di) => {
+                const on = plantillaSet.has(plantillaKey(d, t));
+                html += `<div class="pt-cell${on ? " busy" : ""}" data-pd="${d}" data-pdi="${di}" data-psi="${si}" data-pt="${t}"></div>`;
+            });
+        }
+        html += '</div></div>';
+        gridEl.innerHTML = html;
+        plantillaBindGrid();
+    }
+
+    function plantillaPaintCell(di, si) {
+        const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
+        const key = plantillaKey(PLANTILLA_DAYS[di], t);
+        if (plantillaDrag && plantillaDrag.mode === "MARK_BUSY") plantillaSet.add(key);
+        else plantillaSet.delete(key);
+        const cell = document.querySelector(`#ptGrid .pt-cell[data-pdi="${di}"][data-psi="${si}"]`);
+        if (cell) cell.classList.toggle("busy", !!(plantillaDrag && plantillaDrag.mode === "MARK_BUSY"));
+    }
+
+    function plantillaPaintRect(di, si) {
+        const d0 = Math.min(plantillaDrag.startDi, di), d1 = Math.max(plantillaDrag.startDi, di);
+        const i0 = Math.min(plantillaDrag.startI, si), i1 = Math.max(plantillaDrag.startI, si);
+        for (let dd = d0; dd <= d1; dd++) {
+            for (let ii = i0; ii <= i1; ii++) {
+                plantillaPaintCell(dd, ii);
+                const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${dd}"][data-psi="${ii}"]`);
+                if (el) el.classList.add("dragging");
+            }
+        }
+    }
+
+    function plantillaBindGrid() {
+        const grid = $("ptGrid");
+        if (!grid || grid.dataset.bound) return;
+        grid.dataset.bound = "1";
+        grid.addEventListener("pointerdown", function (e) {
+            if (e.button !== 0) return;
+            const cell = e.target.closest ? e.target.closest(".pt-cell") : null;
+            if (!cell) return;
+            const di = parseInt(cell.getAttribute("data-pdi"), 10);
+            const si = parseInt(cell.getAttribute("data-psi"), 10);
+            if (isNaN(di) || isNaN(si)) return;
+            const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
+            const isBusy = plantillaSet.has(plantillaKey(PLANTILLA_DAYS[di], t));
+            plantillaDrag = { active: true, mode: isBusy ? "MARK_FREE" : "MARK_BUSY", startDi: di, startI: si };
+            plantillaPaintCell(di, si);
+            const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${di}"][data-psi="${si}"]`);
+            if (el) el.classList.add("dragging");
+            e.preventDefault();
+        });
+        grid.addEventListener("pointerenter", function (e) {
+            if (!plantillaDrag || !plantillaDrag.active) return;
+            const cell = e.target.closest ? e.target.closest(".pt-cell") : null;
+            if (!cell) return;
+            const di = parseInt(cell.getAttribute("data-pdi"), 10);
+            const si = parseInt(cell.getAttribute("data-psi"), 10);
+            if (isNaN(di) || isNaN(si)) return;
+            plantillaPaintRect(di, si);
+        });
+        grid.addEventListener("pointermove", function (e) {
+            if (!plantillaDrag || !plantillaDrag.active) return;
+            const el = document.elementFromPoint(e.clientX, e.clientY);
+            const cell = el && el.closest ? el.closest(".pt-cell") : null;
+            if (!cell) return;
+            const di = parseInt(cell.getAttribute("data-pdi"), 10);
+            const si = parseInt(cell.getAttribute("data-psi"), 10);
+            if (isNaN(di) || isNaN(si)) return;
+            plantillaPaintRect(di, si);
+        });
+    }
+
+    function endPlantillaDrag() {
+        if (plantillaDrag) {
+            document.querySelectorAll("#ptGrid .pt-cell.dragging").forEach(el => el.classList.remove("dragging"));
+            plantillaDrag = null;
+        }
+    }
+    document.addEventListener("pointerup", endPlantillaDrag);
+    document.addEventListener("pointercancel", endPlantillaDrag);
+    window.addEventListener("blur", function () { plantillaDrag = null; });
+
+    function serializePlantilla() {
+        const grid = {};
+        PLANTILLA_DAYS.forEach(d => { grid[d] = []; });
+        plantillaSet.forEach(k => {
+            const idx = k.indexOf("-");
+            const day = k.slice(0, idx), tm = k.slice(idx + 1);
+            if (grid[day]) grid[day].push(tm);
+        });
+        return grid;
+    }
+
+    function savePlantilla() {
+        if (!fullData) return;
+        if (fullData.isManager && plantillaViewEmail !== userEmail) {
+            showAlert("Read-only", "You're viewing another member's plantilla. Switch to your own name before saving.");
+            return;
+        }
+        if (plantillaSaveBusy) return;
+        plantillaSaveBusy = true;
+        const serialized = serializePlantilla();
+        sendPostRequest({ action: "Save Plantilla", email: userEmail, grid: serialized })
+            .then(() => {
+                plantillaSaveBusy = false;
+                const local = fullData.plantillas || (fullData.plantillas = []);
+                const mine = local.find(p => p.email === userEmail);
+                const me = plantillaPerson();
+                if (mine) mine.grid = serialized;
+                else local.push({ email: userEmail, fullName: me.name, grid: serialized, updatedAt: "" });
+                toast("Plantilla saved.");
+                refresh();
+            })
+            .catch(() => { plantillaSaveBusy = false; });
+    }
+
+    function clearPlantilla() {
+        if (!fullData) return;
+        if (fullData.isManager && plantillaViewEmail !== userEmail) {
+            showAlert("Read-only", "You're viewing another member's plantilla. Switch to your own name first.");
+            return;
+        }
+        showConfirm("Clear all busy blocks on your plantilla?").then(function (yes) {
+            if (!yes) return;
+            plantillaSet.clear();
+            renderPlantillaGrid();
+            toast("Grid cleared — remember to save.");
+        });
+    }
+
+    // ============================================================
+    //  MEET EDITOR — smart suggestions + host-override conflicts
+    // ============================================================
+    function renderMeetMatcher() {
+        const host = $("meetMatcherWrap");
+        if (!host) return;
+        const days = meetSelectedDays || [];
+        const start = hhmmToMin(cselValue("meetTimeStart"));
+        const end = hhmmToMin(cselValue("meetTimeEnd"));
+        if (!days.length) {
+            host.innerHTML = '<div class="matcher-card"><div class="matcher-note">Pick candidate days above to see smart availability suggestions from members\' plantillas.</div></div>';
+            return;
+        }
+        if (start < 0 || end < 0 || start >= end) { host.innerHTML = ""; return; }
+        const busy = plantillaBusyMap();
+        const members = (fullData.members || []).filter(m => m.isActive);
+        const wdays = [];
+        days.forEach(d => { const w = plantillaWeekdayFor(d); if (w && wdays.indexOf(w) < 0) wdays.push(w); });
+        if (!wdays.length) {
+            host.innerHTML = '<div class="matcher-card"><div class="matcher-note">No weekly plantilla coverage for the picked days — all Sundays fall outside the Mon–Sat grid.</div></div>';
+            return;
+        }
+
+        const slotCount = {};
+        for (let t = start; t + MEET_SLOT_MIN <= end; t += MEET_SLOT_MIN) {
+            let n = 0;
+            members.forEach(m => {
+                for (let wi = 0; wi < wdays.length; wi++) {
+                    if (plantillaBusyAt(busy, m.email, wdays[wi], t)) { n++; break; }
+                }
+            });
+            slotCount[t] = n;
+        }
+        const sorted = Object.keys(slotCount).map(Number).sort((a, b) => slotCount[a] - slotCount[b]);
+        const best = sorted.slice(0, 5);
+
+        const bestHtml = best.length ? best.map(t => {
+            const n = slotCount[t];
+            return `<button type="button" class="matcher-slot${n ? " conflicted" : ""}" data-matcher-t="${t}">
+                <span class="matcher-num">${n ? n + " busy" : "Free"}</span> ${escHtml(fmtTime(minToHHMM(t)))} – ${escHtml(fmtTime(minToHHMM(t + MEET_SLOT_MIN)))}
+            </button>`;
+        }).join("") : '<div class="matcher-note">The time window has no 30-minute slots to compare.</div>';
+
+        const conflictRows = [];
+        const seenMap = {};
+        members.forEach(m => {
+            const name = m.fullName || m.email;
+            days.forEach(d => {
+                const w = plantillaWeekdayFor(d);
+                if (!w) return;
+                for (let t = start; t < end; t += MEET_SLOT_MIN) {
+                    if (plantillaBusyAt(busy, m.email, w, t)) {
+                        const k = m.email + "|" + w;
+                        if (!seenMap[k]) {
+                            seenMap[k] = true;
+                            conflictRows.push({ name: name, day: capDay(w), t: t });
+                        }
+                        break;
+                    }
+                }
+            });
+        });
+        const stripHtml = conflictRows.length
+            ? `<div class="conflict-strip">${conflictRows.map(r =>
+                `<div class="conflict-tag">⚠️ Conflict: ${escHtml(r.name)} is busy (${escHtml(r.day)} ${escHtml(fmtTime(minToHHMM(r.t)))} – ${escHtml(fmtTime(minToHHMM(r.t + MEET_SLOT_MIN)))})</div>`
+            ).join("")}</div>`
+            : '<div class="conflict-strip"><div class="conflict-tag ok">✓ No plantilla conflicts in this window.</div></div>';
+
+        host.innerHTML = `
+            <div class="matcher-card">
+                <div class="matcher-title">⚡ Smart availability</div>
+                <div class="matcher-best">${bestHtml}</div>
+                <div class="matcher-note">Best 30-min picks across the chosen days, fewest plantilla conflicts first. Click one to set the time window — you can still pick any other slot.</div>
+            </div>
+            <div class="matcher-card" style="margin-top:8px;">
+                <div class="matcher-title">⚠️ Override check</div>
+                ${stripHtml}
+            </div>`;
+
+        host.querySelectorAll(".matcher-slot").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const t = parseInt(btn.getAttribute("data-matcher-t"), 10);
+                const opts = meetTimeOptions();
+                cselSetValue("meetTimeStart", minToHHMM(t), opts);
+                cselSetValue("meetTimeEnd", minToHHMM(t + MEET_SLOT_MIN), opts);
+                renderMeetMatcher();
+            });
+        });
+    }
+
+    // ============================================================
+    //  IN-APP CONFLICT NOTIFICATION (computed + localStorage seen)
+    // ============================================================
+    const CONFLICT_SEEN_KEY = "ebdb_plantilla_conflict_seen_v1";
+    function readConflictSeen() {
+        try { return new Set(JSON.parse(localStorage.getItem(CONFLICT_SEEN_KEY) || "[]")); } catch (e) { return new Set(); }
+    }
+    function saveConflictSeen(set) {
+        try { localStorage.setItem(CONFLICT_SEEN_KEY, JSON.stringify(Array.from(set))); } catch (e) {}
+    }
+
+    function plantillaConflictMeets() {
+        if (!fullData || !userEmail) return [];
+        const busy = plantillaBusyMap();
+        const mine = busy[userEmail];
+        if (!mine) return [];
+        let hasAny = false;
+        PLANTILLA_DAYS.forEach(d => { if (mine.day[d].size > 0) hasAny = true; });
+        if (!hasAny) return [];
+        return meetsList().filter(m => {
+            if (m.creatorEmail === userEmail) return false;
+            if (m.status !== "Open" && m.status !== "Finalized") return false;
+            const start = hhmmToMin(m.timeStart), end = hhmmToMin(m.timeEnd);
+            if (start < 0 || end < 0 || start >= end) return false;
+            for (let i = 0; i < (m.days || []).length; i++) {
+                const w = plantillaWeekdayFor(m.days[i]);
+                if (!w) continue;
+                for (let t = start; t < end; t += MEET_SLOT_MIN) {
+                    if (mine.day[w].has(t)) return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    function renderPlantillaConflictNotifs() {
+        const wrap = $("conflictBannerWrap");
+        if (!wrap) return;
+        if (!fullData || !userEmail) {
+            _conflictNotifSig = null;
+            wrap.classList.add("hidden"); wrap.innerHTML = "";
+            return;
+        }
+        const conflicts = plantillaConflictMeets();
+        const seen = readConflictSeen();
+        const fresh = conflicts.filter(m => !seen.has(m.id));
+        const sig = fresh.map(m => m.id).join(",") + "|" + (wrap.classList.contains("hidden") ? "h" : "v");
+        if (_conflictNotifSig === sig) return;
+        _conflictNotifSig = sig;
+        if (!fresh.length) { wrap.classList.add("hidden"); wrap.innerHTML = ""; return; }
+        const items = fresh.slice(0, 4).map(m => `
+            <div class="conflict-banner-item">
+                <div class="cb-main">
+                    <div class="cb-title">${escHtml(m.title)}</div>
+                    <div class="cb-sub">${escHtml(fmtDateMed((m.days || [])[0]))} · ${escHtml(fmtTime(m.timeStart))} – ${escHtml(fmtTime(m.timeEnd))} overlaps your plantilla</div>
+                </div>
+                <button type="button" class="cb-view" data-cb-meet="${escHtml(m.id)}">View</button>
+            </div>`).join("");
+        const extra = fresh.length > 4 ? `<div class="cb-sub" style="margin-top:4px;">and ${fresh.length - 4} more</div>` : "";
+        wrap.innerHTML = `<div class="conflict-banner">
+            <div class="conflict-banner-head">
+                <span>⚠️ Plantilla conflict</span>
+                <button type="button" class="cb-close" data-cb-close>&times;</button>
+            </div>
+            ${items}
+            ${extra}
+            <div class="conflict-banner-dismiss"><button type="button" data-cb-dismiss>Dismiss all</button></div>
+        </div>`;
+        wrap.classList.remove("hidden");
+
+        function markAllFreshSeen() {
+            const s = readConflictSeen();
+            fresh.forEach(m => s.add(m.id));
+            saveConflictSeen(s);
+        }
+        wrap.querySelectorAll("[data-cb-meet]").forEach(b => {
+            b.addEventListener("click", function () {
+                const id = b.getAttribute("data-cb-meet");
+                const s = readConflictSeen(); s.add(id); saveConflictSeen(s);
+                closePlantillaNotif();
+                if (meetById(id)) openMeetModal(id);
+            });
+        });
+        const closeBtn = wrap.querySelector("[data-cb-close]");
+        if (closeBtn) closeBtn.addEventListener("click", function () { markAllFreshSeen(); closePlantillaNotif(); });
+        const dismissBtn = wrap.querySelector("[data-cb-dismiss]");
+        if (dismissBtn) dismissBtn.addEventListener("click", function () { markAllFreshSeen(); closePlantillaNotif(); });
+    }
+
+    function closePlantillaNotif() {
+        const wrap = $("conflictBannerWrap");
+        if (wrap) { wrap.classList.add("hidden"); wrap.innerHTML = ""; }
+    }
+
     // ----- Heatmap tooltip -----
     (function () {
         const tip = $("meetTooltip");
@@ -3211,8 +3878,11 @@
         $("meetEditorTitle").textContent = m ? "Edit Meet" : "New Meet";
         $("meetTitleInput").value = m ? m.title : "";
         $("meetNotesInput").value = m ? m.notes : "";
-        $("meetTimeStart").value = m ? minToHHMM(meetMinutes(m.timeStart)) : "07:00";
-        $("meetTimeEnd").value = m ? minToHHMM(meetMinutes(m.timeEnd)) : "22:00";
+        const tOpts = meetTimeOptions();
+        const tStart = m ? minToHHMM(meetMinutes(m.timeStart)) : "07:00";
+        const tEnd = m ? minToHHMM(meetMinutes(m.timeEnd)) : "22:00";
+        renderCselAt("meetTimeStartWrap", "meetTimeStart", tOpts, tStart, function () { renderMeetMatcher(); });
+        renderCselAt("meetTimeEndWrap", "meetTimeEnd", tOpts, tEnd, function () { renderMeetMatcher(); });
         meetSelectedDays = m && m.days && m.days.length ? m.days.slice() : [];
         const now = new Date();
         const anchor = meetSelectedDays.length ? meetSelectedDays[0]
@@ -3268,16 +3938,17 @@
         const wrap = $("meetDayChips");
         if (!meetSelectedDays.length) {
             wrap.innerHTML = '<span style="font-size:0.72rem;color:var(--text-muted);">No days picked yet — click dates above.</span>';
-            return;
+        } else {
+            wrap.innerHTML = "";
+            meetSelectedDays.forEach(iso => {
+                const chip = document.createElement("span");
+                chip.className = "mchip";
+                chip.innerHTML = escHtml(weekdayShort(iso) + ", " + fmtDateMed(iso)) +
+                    ' <button type="button" data-click="toggleMeetDay(\'' + iso + '\')" title="Remove">✕</button>';
+                wrap.appendChild(chip);
+            });
         }
-        wrap.innerHTML = "";
-        meetSelectedDays.forEach(iso => {
-            const chip = document.createElement("span");
-            chip.className = "mchip";
-            chip.innerHTML = escHtml(weekdayShort(iso) + ", " + fmtDateMed(iso)) +
-                ' <button type="button" data-click="toggleMeetDay(\'' + iso + '\')" title="Remove">✕</button>';
-            wrap.appendChild(chip);
-        });
+        renderMeetMatcher();
     }
 
     function collectMeetDays() {
@@ -3289,7 +3960,7 @@
         if (!title) { showAlert("Missing title", "Give the meet a title."); return; }
         const days = collectMeetDays();
         if (!days.length) { showAlert("Missing days", "Add at least one candidate day."); return; }
-        const tS = $("meetTimeStart").value, tE = $("meetTimeEnd").value;
+        const tS = cselValue("meetTimeStart"), tE = cselValue("meetTimeEnd");
         if (!tS || !tE || tS >= tE) { showAlert("Invalid time window", "End time must be after start time."); return; }
         const body = editingMeetId
             ? { action: "Update Meet", id: editingMeetId, title: title, notes: $("meetNotesInput").value.trim(), days: days, timeStart: tS, timeEnd: tE }
@@ -3332,8 +4003,8 @@
 
     function finalizeMeet(id) {
         const day = meetFinalPick;
-        const start = $("meetFinalStart") ? $("meetFinalStart").value : "";
-        const end = $("meetFinalEnd") ? $("meetFinalEnd").value : "";
+        const start = cselValue("meetFinalStart") || "";
+        const end = cselValue("meetFinalEnd") || "";
         if (!day || !start || !end || start >= end) { showAlert("Missing details", "Pick the final day and a valid time range."); return; }
         sendPostRequest({ action: "Finalize Meet", id: id, day: day, start: start, end: end })
             .then(() => { closeModal("meetModal"); toast("Meet finalized."); refresh(); })
@@ -3374,25 +4045,30 @@
         $("commitmentModalTitle").textContent = id ? "Edit Commitment" : "New Commitment";
         $("commitmentMemberRow").classList.toggle("hidden", !fullData.isManager);
         if (fullData.isManager) {
-            const sel = $("commitmentMemberSelect");
-            sel.innerHTML = (fullData.members || []).filter(m => m.isActive)
-                .map(m => `<option value="${m.email}">${escHtml(m.fullName || m.email)}</option>`).join("");
+            const opts = (fullData.members || []).filter(m => m.isActive)
+                .map(m => ({ value: m.email, label: (m.fullName || m.email) }));
+            if (id) {
+                const c = (fullData.commitments || []).find(x => x.id === id);
+                renderCselAt("commitmentMemberSelect", "commitmentMemberSelectCsel", opts, c ? c.email : (opts[0] || {}).value || "", null);
+            } else if (!$("commitmentMemberSelectCsel")) {
+                renderCselAt("commitmentMemberSelect", "commitmentMemberSelectCsel", opts, (opts[0] || {}).value || "", null);
+            }
         }
+        const TYPE_OPTS = ["OJT", "Practicum", "Thesis", "Org", "Personal", "Other"].map(v => ({ value: v, label: v }));
         if (id) {
             const c = (fullData.commitments || []).find(x => x.id === id);
             if (c) {
-                if (fullData.isManager) $("commitmentMemberSelect").value = c.email;
                 $("commitmentDate").value = c.date;
                 $("commitmentStart").value = c.start;
                 $("commitmentEnd").value = c.end;
-                $("commitmentType").value = c.type || "Other";
+                renderCselAt("commitmentType", "commitmentTypeCsel", TYPE_OPTS, c.type || "Other", null);
                 $("commitmentNotes").value = c.notes || "";
             }
         } else {
             $("commitmentDate").value = todayISO();
             $("commitmentStart").value = "";
             $("commitmentEnd").value = "";
-            $("commitmentType").value = "Other";
+            renderCselAt("commitmentType", "commitmentTypeCsel", TYPE_OPTS, "Other", null);
             $("commitmentNotes").value = "";
         }
         openModal("commitmentModal");
@@ -3404,12 +4080,12 @@
             date: $("commitmentDate").value,
             start: $("commitmentStart").value,
             end: $("commitmentEnd").value,
-            type: $("commitmentType").value,
+            type: cselValue("commitmentTypeCsel") || "Other",
             notes: $("commitmentNotes").value.trim()
         };
         const body = editingCommitmentId
             ? Object.assign({ action: "Update Commitment", id: editingCommitmentId }, common)
-            : Object.assign({ action: "Add Commitment" }, common, fullData.isManager ? { email: $("commitmentMemberSelect").value } : {});
+            : Object.assign({ action: "Add Commitment" }, common, fullData.isManager ? { email: cselValue("commitmentMemberSelectCsel") || userEmail } : {});
         sendPostRequest(body)
             .then(() => { closeModal("commitmentModal"); toast("Commitment saved."); refresh(); })
             .catch(() => {});
@@ -5040,6 +5716,7 @@
     });
     document.addEventListener("keydown", function (e) {
         if (e.key === "Escape") {
+            closeAllCsel();
             ["alertModal", "confirmModal", "feedbackModal", "meetModal", "meetEditorModal", "commitmentModal", "activityModal", "linkModal", "memberModal", "setTermModal", "dayDrawerModal", "guideModal"].forEach(id => closeModal(id));
         }
     });
