@@ -25,7 +25,7 @@
         --danger: #ef4444;
         --warning: #d97706;
         --border-soft: rgba(226, 232, 240, 0.7);
-        --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+        --shadow-sm: 0 4px 6px -1px rgba(197, 136, 136, 0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
         --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.06), 0 4px 6px -4px rgba(0,0,0,0.05);
         --shadow-lg: 0 20px 40px -8px rgba(0,0,0,0.10), 0 8px 16px -6px rgba(0,0,0,0.05);
         --overlay-bg: rgba(15, 23, 42, 0.35);
@@ -464,9 +464,19 @@
     .pt-grid {
         display: grid; gap: 3px; min-width: 0;
         user-select: none; -webkit-user-select: none;
-        touch-action: none; overflow: hidden; contain: layout style;
+        touch-action: pan-x; overflow: hidden; contain: layout style;
     }
     .pt-head { text-align: center; font-size: 0.7rem; font-weight: 800; padding: 4px 2px; border-radius: 6px; }
+    .pt-lock-wrap { text-align: center; padding: 2px 0 4px; }
+    .pt-lock {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 22px; height: 22px; padding: 0; border: 1px solid var(--border-soft);
+        border-radius: 7px; background: var(--surface-card); color: var(--text-muted);
+        cursor: pointer; transition: all 0.15s ease;
+    }
+    .pt-lock:hover { border-color: var(--text-muted); color: var(--text-main); }
+    .pt-lock svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .pt-lock.locked { border-color: var(--dlsu-green); color: var(--dlsu-green); background: rgba(10,92,54,0.10); box-shadow: 0 1px 3px rgba(0,0,0,0.10); }
     .pt-time { font-size: 0.6rem; color: var(--text-muted); text-align: right; padding-right: 5px; align-self: center; white-space: nowrap; }
     .pt-cell {
         height: 22px; border-radius: 5px; background: var(--surface-card);
@@ -479,6 +489,10 @@
     .pt-cell.busy:hover { filter: brightness(1.08); }
     .pt-cell.dragging { transform: scale(1.05); z-index: 3; box-shadow: 0 2px 8px rgba(100,116,139,0.25); background: #e2e8f0; border-color: #94a3b8; }
     .pt-cell.busy.dragging { background: var(--danger); border-color: #dc2626; }
+    .pt-cell.locked { cursor: default; opacity: 0.55; filter: grayscale(0.35); }
+    .pt-cell.locked:hover { transform: none; box-shadow: none; }
+    .pt-cell.locked.busy { background: rgba(100,116,139,0.35); border-color: rgba(100,116,139,0.5); }
+    .pt-cell.locked.busy:hover { filter: grayscale(0.35); }
     /* ---------- Custom single-select dropdown (no native <select>) ---------- */
     .csel { position: relative; }
     .csel-trigger {
@@ -3379,6 +3393,46 @@
     let plantillaSaveBusy = false;
     let _conflictNotifSig = null;
 
+    const PLANTILLA_LOCKS_KEY = "ebdb_plantilla_locks_v1";
+    let plantillaLocks = new Set();
+    try {
+        const rawLocks = localStorage.getItem(PLANTILLA_LOCKS_KEY);
+        if (rawLocks) {
+            const arr = JSON.parse(rawLocks);
+            (Array.isArray(arr) ? arr : []).forEach(function (d) {
+                if (PLANTILLA_DAYS.indexOf(d) >= 0) plantillaLocks.add(d);
+            });
+        }
+    } catch (e) {}
+    function savePlantillaLocks() {
+        try { localStorage.setItem(PLANTILLA_LOCKS_KEY, JSON.stringify(Array.from(plantillaLocks))); } catch (e) {}
+    }
+    function plantillaLockIcon(locked) {
+        const body = locked
+            ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'
+            : '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>';
+    }
+    function plantillaDraftKey(email) { return "ebdb_plantilla_draft_" + (email || ""); }
+    function savePlantillaDraft(email) {
+        if (!email || email !== userEmail) return;
+        try { localStorage.setItem(plantillaDraftKey(email), JSON.stringify(serializePlantilla())); } catch (e) {}
+    }
+    function loadPlantillaDraft(email) {
+        try {
+            const raw = localStorage.getItem(plantillaDraftKey(email));
+            if (!raw) return null;
+            const grid = JSON.parse(raw);
+            if (!grid || typeof grid !== "object") return null;
+            const out = {};
+            PLANTILLA_DAYS.forEach(d => { out[d] = Array.isArray(grid[d]) ? grid[d].slice() : []; });
+            return out;
+        } catch (e) { return null; }
+    }
+    function clearPlantillaDraft(email) {
+        try { localStorage.removeItem(plantillaDraftKey(email)); } catch (e) {}
+    }
+
     function capDay(d) { return d.charAt(0) + d.slice(1).toLowerCase(); }
     function plantillaKey(day, startMin) { return day + "-" + minToHHMM(startMin); }
     function plantillaWeekdayFor(iso) {
@@ -3472,7 +3526,11 @@
         if (fullData.isManager) {
             const opts = (fullData.members || []).filter(m => m.isActive)
                 .map(m => ({ value: m.email, label: (m.fullName || m.email) }))
-                .sort((a, b) => a.label.localeCompare(b.label));
+                .sort(function (a, b) {
+                    if (a.value === userEmail) return -1;
+                    if (b.value === userEmail) return 1;
+                    return a.label.localeCompare(b.label);
+                });
             if (!row.dataset.bound) {
                 row.classList.remove("hidden");
                 renderCselAt("plantillaMemberCustom", "plantillaMemberCsel", opts, plantillaViewEmail, function (val) {
@@ -3490,6 +3548,15 @@
             plantillaViewEmail = userEmail;
         }
         plantillaRefreshSet();
+        if (plantillaViewEmail === userEmail) {
+            const draft = loadPlantillaDraft(userEmail);
+            if (draft) {
+                PLANTILLA_DAYS.forEach(d => (draft[d] || []).forEach(t => {
+                    const m = hhmmToMin(t);
+                    if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) plantillaSet.add(plantillaKey(d, m));
+                }));
+            }
+        }
         renderPlantillaGrid();
         renderCommitments();
     }
@@ -3500,12 +3567,14 @@
         const rowCount = (PLANTILLA_END_MIN - PLANTILLA_START_MIN) / PLANTILLA_STEP_MIN;
         let html = '<div class="pt-wrap"><div class="pt-grid" id="ptGrid" style="grid-template-columns:64px repeat(6, minmax(44px, 1fr));">';
         html += '<div></div>' + PLANTILLA_DAYS.map(d => `<div class="pt-head">${capDay(d)}</div>`).join("");
+        html += '<div></div>' + PLANTILLA_DAYS.map(d => `<div class="pt-lock-wrap"><button type="button" class="pt-lock${plantillaLocks.has(d) ? " locked" : ""}" data-ld="${d}" title="${plantillaLocks.has(d) ? "Unlock " : "Lock "}${capDay(d)}">${plantillaLockIcon(plantillaLocks.has(d))}</button></div>`).join("");
         for (let si = 0; si < rowCount; si++) {
             const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
             html += `<div class="pt-time">${t % 60 === 0 ? escHtml(fmtTime(minToHHMM(t))) : ""}</div>`;
             PLANTILLA_DAYS.forEach((d, di) => {
                 const on = plantillaSet.has(plantillaKey(d, t));
-                html += `<div class="pt-cell${on ? " busy" : ""}" data-pd="${d}" data-pdi="${di}" data-psi="${si}" data-pt="${t}"></div>`;
+                const locked = plantillaLocks.has(d);
+                html += `<div class="pt-cell${on ? " busy" : ""}${locked ? " locked" : ""}" data-pd="${d}" data-pdi="${di}" data-psi="${si}" data-pt="${t}"></div>`;
             });
         }
         html += '</div></div>';
@@ -3514,23 +3583,24 @@
     }
 
     function plantillaPaintCell(di, si) {
+        const day = PLANTILLA_DAYS[di];
+        if (plantillaLocks.has(day)) return;
         const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
-        const key = plantillaKey(PLANTILLA_DAYS[di], t);
+        const key = plantillaKey(day, t);
         if (plantillaDrag && plantillaDrag.mode === "MARK_BUSY") plantillaSet.add(key);
         else plantillaSet.delete(key);
         const cell = document.querySelector(`#ptGrid .pt-cell[data-pdi="${di}"][data-psi="${si}"]`);
         if (cell) cell.classList.toggle("busy", !!(plantillaDrag && plantillaDrag.mode === "MARK_BUSY"));
+        if (plantillaViewEmail === userEmail) savePlantillaDraft(userEmail);
     }
 
     function plantillaPaintRect(di, si) {
-        const d0 = Math.min(plantillaDrag.startDi, di), d1 = Math.max(plantillaDrag.startDi, di);
+        const dd = plantillaDrag.startDi;
         const i0 = Math.min(plantillaDrag.startI, si), i1 = Math.max(plantillaDrag.startI, si);
-        for (let dd = d0; dd <= d1; dd++) {
-            for (let ii = i0; ii <= i1; ii++) {
-                plantillaPaintCell(dd, ii);
-                const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${dd}"][data-psi="${ii}"]`);
-                if (el) el.classList.add("dragging");
-            }
+        for (let ii = i0; ii <= i1; ii++) {
+            plantillaPaintCell(dd, ii);
+            const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${dd}"][data-psi="${ii}"]`);
+            if (el && !plantillaLocks.has(PLANTILLA_DAYS[dd])) el.classList.add("dragging");
         }
     }
 
@@ -3540,18 +3610,28 @@
         grid.dataset.bound = "1";
         grid.addEventListener("pointerdown", function (e) {
             if (e.button !== 0) return;
+            const lockBtn = e.target.closest ? e.target.closest(".pt-lock") : null;
+            if (lockBtn) return;
             const cell = e.target.closest ? e.target.closest(".pt-cell") : null;
             if (!cell) return;
             const di = parseInt(cell.getAttribute("data-pdi"), 10);
             const si = parseInt(cell.getAttribute("data-psi"), 10);
             if (isNaN(di) || isNaN(si)) return;
+            if (plantillaLocks.has(PLANTILLA_DAYS[di])) return;
             const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
             const isBusy = plantillaSet.has(plantillaKey(PLANTILLA_DAYS[di], t));
-            plantillaDrag = { active: true, mode: isBusy ? "MARK_FREE" : "MARK_BUSY", startDi: di, startI: si };
-            plantillaPaintCell(di, si);
-            const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${di}"][data-psi="${si}"]`);
-            if (el) el.classList.add("dragging");
+            plantillaDrag = { down: true, active: false, mode: isBusy ? "MARK_FREE" : "MARK_BUSY", startDi: di, startI: si, sx: e.clientX, sy: e.clientY };
             e.preventDefault();
+        });
+        grid.addEventListener("click", function (e) {
+            const lockBtn = e.target.closest ? e.target.closest(".pt-lock") : null;
+            if (!lockBtn) return;
+            const day = lockBtn.getAttribute("data-ld");
+            if (!day) return;
+            if (plantillaLocks.has(day)) plantillaLocks.delete(day);
+            else plantillaLocks.add(day);
+            savePlantillaLocks();
+            renderPlantillaGrid();
         });
         grid.addEventListener("pointerenter", function (e) {
             if (!plantillaDrag || !plantillaDrag.active) return;
@@ -3563,7 +3643,15 @@
             plantillaPaintRect(di, si);
         });
         grid.addEventListener("pointermove", function (e) {
-            if (!plantillaDrag || !plantillaDrag.active) return;
+            if (!plantillaDrag || !plantillaDrag.down) return;
+            if (!plantillaDrag.active) {
+                const dx = e.clientX - plantillaDrag.sx, dy = e.clientY - plantillaDrag.sy;
+                if (dx * dx + dy * dy < 36) return;
+                plantillaDrag.active = true;
+                plantillaPaintCell(plantillaDrag.startDi, plantillaDrag.startI);
+                const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${plantillaDrag.startDi}"][data-psi="${plantillaDrag.startI}"]`);
+                if (el && !plantillaLocks.has(PLANTILLA_DAYS[plantillaDrag.startDi])) el.classList.add("dragging");
+            }
             const el = document.elementFromPoint(e.clientX, e.clientY);
             const cell = el && el.closest ? el.closest(".pt-cell") : null;
             if (!cell) return;
@@ -3574,14 +3662,16 @@
         });
     }
 
-    function endPlantillaDrag() {
+    function endPlantillaDrag(allowTap) {
         if (plantillaDrag) {
+            const drag = plantillaDrag;
             document.querySelectorAll("#ptGrid .pt-cell.dragging").forEach(el => el.classList.remove("dragging"));
             plantillaDrag = null;
+            if (allowTap !== false && drag.down && !drag.active) plantillaPaintCell(drag.startDi, drag.startI);
         }
     }
-    document.addEventListener("pointerup", endPlantillaDrag);
-    document.addEventListener("pointercancel", endPlantillaDrag);
+    document.addEventListener("pointerup", function () { endPlantillaDrag(true); });
+    document.addEventListener("pointercancel", function () { endPlantillaDrag(false); });
     window.addEventListener("blur", function () { plantillaDrag = null; });
 
     function serializePlantilla() {
@@ -3612,6 +3702,7 @@
                 const me = plantillaPerson();
                 if (mine) mine.grid = serialized;
                 else local.push({ email: userEmail, fullName: me.name, grid: serialized, updatedAt: "" });
+                clearPlantillaDraft(userEmail);
                 toast("Plantilla saved.");
                 refresh();
             })
@@ -3624,11 +3715,17 @@
             showAlert("Read-only", "You're viewing another member's plantilla. Switch to your own name first.");
             return;
         }
-        showConfirm("Clear all busy blocks on your plantilla?").then(function (yes) {
+        showConfirm("Clear all busy blocks on your plantilla? (locked days are kept)").then(function (yes) {
             if (!yes) return;
-            plantillaSet.clear();
+            const kept = new Set();
+            plantillaSet.forEach(k => {
+                const idx = k.indexOf("-");
+                if (idx >= 0 && plantillaLocks.has(k.slice(0, idx))) kept.add(k);
+            });
+            plantillaSet = kept;
             renderPlantillaGrid();
-            toast("Grid cleared — remember to save.");
+            savePlantillaDraft(userEmail);
+            toast(plantillaLocks.size ? "Grid cleared — locked days kept. Remember to save." : "Grid cleared — remember to save.");
         });
     }
 
