@@ -1483,12 +1483,13 @@
             <div class="modal-body" style="display:flex;flex-direction:column;gap:20px;">
                 <div style="background:linear-gradient(135deg,var(--dlsu-green),var(--accent));padding:18px 20px;border-radius:14px;color:#fff;">
                     <h4 style="color:#fff;margin:0 0 6px;font-size:1.1rem;">Welcome to the EB Database!</h4>
-                    <p style="font-size:0.88rem;opacity:0.92;margin:0;line-height:1.5;">This guide covers everything — meets, commitments, the calendar of activities, and the links hub. Use the quick-jump below or scroll through.</p>
+                    <p style="font-size:0.88rem;opacity:0.92;margin:0;line-height:1.5;">This guide covers everything — plantilla, meets, commitments, the calendar of activities, and the links hub. Use the quick-jump below or scroll through.</p>
                 </div>
 
                 <div style="display:flex;flex-wrap:wrap;gap:8px;">
                     <button data-click="document.getElementById('guide-getting-started').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(16,185,129,0.1);color:#10b981;border:1px solid rgba(16,185,129,0.2);cursor:pointer;" class="guide-nav-btn">Getting Started</button>
-                    <button data-click="document.getElementById('guide-plantilla').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(20,184,166,0.1);color:#0d9488;border:1px solid rgba(20,184,166,0.2);cursor:pointer;" class="guide-nav-btn">Meets</button>
+                    <button data-click="document.getElementById('guide-plantilla').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(20,184,166,0.1);color:#0d9488;border:1px solid rgba(20,184,166,0.2);cursor:pointer;" class="guide-nav-btn">Plantilla</button>
+                    <button data-click="document.getElementById('guide-meets').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(37,99,235,0.1);color:#2563eb;border:1px solid rgba(37,99,235,0.2);cursor:pointer;" class="guide-nav-btn">Meets</button>
                     <button data-click="document.getElementById('guide-calendar').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(217,119,6,0.1);color:#d97706;border:1px solid rgba(217,119,6,0.2);cursor:pointer;" class="guide-nav-btn">Calendar</button>
                     <button data-click="document.getElementById('guide-links').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(79,70,229,0.1);color:#4f46e5;border:1px solid rgba(79,70,229,0.2);cursor:pointer;" class="guide-nav-btn">Links Hub</button>
                     <button data-click="document.getElementById('guide-roles').scrollIntoView({behavior:'smooth',block:'start'})" style="padding:5px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;background:rgba(225,29,72,0.1);color:#e11d48;border:1px solid rgba(225,29,72,0.2);cursor:pointer;" class="guide-nav-btn">Members &amp; Roles</button>
@@ -1504,16 +1505,33 @@
                         <li style="margin-bottom:4px;">Sign in with your official <code>@dlsu.edu.ph</code> Google account. Access is restricted to members listed in the EB roster.</li>
                         <li style="margin-bottom:4px;">If you're new, ask a Website Admin member to add you to the <code>EB_Members</code> roster first.</li>
                         <li style="margin-bottom:4px;">Toggle <strong>Light</strong> and <strong>Dark</strong> mode with the sun/moon icon in the header.</li>
-                        <li style="margin-bottom:4px;">Use the panels to navigate: <strong>Overview</strong>, <strong>Meets</strong>, <strong>Calendar</strong>, <strong>Links Hub</strong>, and <strong>EB Members</strong>.</li>
+                        <li style="margin-bottom:4px;">Use the panels to navigate: <strong>Overview</strong>, <strong>Plantilla</strong>, <strong>Meets</strong>, <strong>Calendar</strong>, <strong>Links Hub</strong>, and <strong>EB Members</strong>.</li>
                         <li style="margin-bottom:4px;">Everything is saved straight to the EB Database sheet — open the app and it loads your latest data, then refreshes silently in the background as you work.</li>
                         <li style="margin-bottom:4px;">When a meet is waiting on your availability, a <strong>response drawer</strong> slides in on your left with the meet title, the response rate, and a <strong>"Respond now"</strong> shortcut that jumps you straight to it.</li>
                         <li style="margin-bottom:4px;">On mobile, use the <strong>☰ menu</strong> in the header to switch panels and sign out.</li>
                     </ul>
                 </div>
 
-                <div id="guide-plantilla" style="border-left:3px solid #14b8a6;padding-left:16px;">
+                <div id="guide-plantilla" style="border-left:3px solid #0d9488;padding-left:16px;">
                     <h4 style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                        Plantilla — Weekly Availability
+                    </h4>
+                    <ul style="margin:0 0 12px;padding-left:20px;font-size:0.88rem;list-style-type:disc;">
+                        <li style="margin-bottom:4px;">The <strong>Plantilla</strong> panel holds your <strong>weekly recurring availability</strong>: a Mon–Sat grid of half-hour cells from 7:00 AM to 11:00 PM. It's separate from one-off Meets scheduling.</li>
+                        <li style="margin-bottom:4px;">Paint your busy blocks by <strong>clicking a cell</strong> to toggle it, or <strong>dragging vertically within a day column</strong> to fill a stretch. Dragging sideways doesn't jump to other days.</li>
+                        <li style="margin-bottom:4px;">On mobile the grid is wider than the screen — <strong>swipe left or right</strong> to scroll between days.</li>
+                        <li style="margin-bottom:4px;">Hit <strong>Save Plantilla</strong> to push your changes to the sheet; <strong>Clear Grid</strong> wipes the cells of <strong>unlocked days only</strong>.</li>
+                        <li style="margin-bottom:4px;"><strong>Locks:</strong> tap the lock icon under a day's name to freeze that day — its busy and free cells can no longer be painted or edited by accident. Locks are remembered across visits; tap again to unlock.</li>
+                        <li style="margin-bottom:4px;"><strong>Unsaved changes are kept automatically.</strong> If you reload before saving, your painted cells are restored. Clicking Save clears that local copy once the grid is stored.</li>
+                        <li style="margin-bottom:4px;">Website Admins can preview another member's grid with the <strong>View member</strong> dropdown (your own name always sits on top). That preview is read-only — edits there won't be saved.</li>
+                        <li style="margin-bottom:4px;"><strong>Add Commitment</strong> (bottom of the Plantilla panel) is for one-off dates that don't repeat, e.g. exams or events. These also appear in the Calendar's day drawer.</li>
+                    </ul>
+                </div>
+
+                <div id="guide-meets" style="border-left:3px solid #2563eb;padding-left:16px;">
+                    <h4 style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                         Meets — Group Scheduling
                     </h4>
                     <ul style="margin:0 0 12px;padding-left:20px;font-size:0.88rem;list-style-type:disc;">
@@ -1522,7 +1540,6 @@
                         <li style="margin-bottom:4px;">The heatmap shows how many EBs are free per slot — darker means more people. Hover a cell to see exactly who.</li>
                         <li style="margin-bottom:4px;">The <strong>Best overlaps</strong> strip lists time windows where everyone who responded is free.</li>
                         <li style="margin-bottom:4px;">The creator (or Website Admin) can edit, close, reopen, or delete a meet, and <strong>Finalize</strong> it once the group settles on a day and time.</li>
-                        <li style="margin-bottom:4px;"><strong>Add Commitment</strong> (bottom of the Meets tab) is still the place for one-off dates that don't repeat, e.g. exams or events. These also appear in the Calendar's day drawer.</li>
                     </ul>
                 </div>
 
