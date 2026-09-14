@@ -485,14 +485,58 @@
         will-change: transform;
     }
     .pt-cell:hover { transform: scale(1.04); z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.10); }
-    .pt-cell.busy { background: rgba(239,68,68,0.30); border-color: rgba(239,68,68,0.65); }
+    .pt-cell.busy { background: rgba(239,68,68,0.45); border-color: rgba(239,68,68,0.85); }
     .pt-cell.busy:hover { filter: brightness(1.08); }
-    .pt-cell.dragging { transform: scale(1.05); z-index: 3; box-shadow: 0 2px 8px rgba(100,116,139,0.25); background: #e2e8f0; border-color: #94a3b8; }
-    .pt-cell.busy.dragging { background: var(--danger); border-color: #dc2626; }
+    .pt-cell.busy-online { background: rgba(139,92,246,0.45); border-color: rgba(139,92,246,0.85); }
+    .pt-cell.busy-online:hover { filter: brightness(1.08); }
+    .pt-cell.busy-f2f { background: rgba(255,204,0,0.45); border-color: rgba(255,204,0,0.85); }
+    .pt-cell.busy-f2f:hover { filter: brightness(1.08); }
+    .pt-cell.busy-willing { background: rgba(34,197,94,0.45); border-color: rgba(34,197,94,0.85); }
+    .pt-cell.busy-willing:hover { filter: brightness(1.08); }
+    .pt-cell.busy-personal { background: rgba(0,122,255,0.45); border-color: rgba(0,122,255,0.85); }
+    .pt-cell.busy-personal:hover { filter: brightness(1.08); }
+    .pt-cell.busy-unavailable { background: rgba(255,255,255,0.85); border-color: rgba(148,163,184,0.50); }
+    .pt-cell.busy-unavailable:hover { filter: brightness(1.04); }
+    .pt-cell.dragging { transform: scale(1.05); z-index: 3; box-shadow: 0 2px 8px rgba(100,116,139,0.18); }
     .pt-cell.locked { cursor: default; opacity: 0.55; filter: grayscale(0.35); }
     .pt-cell.locked:hover { transform: none; box-shadow: none; }
     .pt-cell.locked.busy { background: rgba(100,116,139,0.35); border-color: rgba(100,116,139,0.5); }
     .pt-cell.locked.busy:hover { filter: grayscale(0.35); }
+    .pt-cell.locked.busy-online { background: rgba(139,92,246,0.18); border-color: rgba(139,92,246,0.40); }
+    .pt-cell.locked.busy-online:hover { filter: grayscale(0.35); }
+    .pt-cell.locked.busy-f2f { background: rgba(255,204,0,0.20); border-color: rgba(255,204,0,0.45); }
+    .pt-cell.locked.busy-f2f:hover { filter: grayscale(0.35); }
+    .pt-cell.locked.busy-willing { background: rgba(34,197,94,0.18); border-color: rgba(34,197,94,0.40); }
+    .pt-cell.locked.busy-willing:hover { filter: grayscale(0.35); }
+    .pt-cell.locked.busy-personal { background: rgba(0,122,255,0.18); border-color: rgba(0,122,255,0.40); }
+    .pt-cell.locked.busy-personal:hover { filter: grayscale(0.35); }
+    .pt-cell.locked.busy-unavailable { background: rgba(148,163,184,0.14); border-color: rgba(148,163,184,0.32); }
+    .pt-cell.locked.busy-unavailable:hover { filter: grayscale(0.35); }
+    /* Day action buttons (All / Clear) */
+    .pt-day-actions { display: flex; justify-content: center; gap: 2px; padding: 2px 0; }
+    .pt-day-actions button {
+        font-size: 0.55rem; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+        border: 1px solid var(--border-soft); background: var(--surface-card);
+        color: var(--text-muted); cursor: pointer; transition: all 0.12s ease;
+        line-height: 1.3;
+    }
+    .pt-day-actions button:hover { border-color: var(--dlsu-green); color: var(--dlsu-green); }
+    .pt-day-actions button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .pt-day-actions button:hover:not(:disabled) { background: rgba(10,92,54,0.06); }
+    /* Color palette legend */
+    .mt-color-palette { display: flex; align-items: center; gap: 3px; margin-top: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .mt-color-swatch {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 3px 8px; border-radius: 100px; border: 1.5px solid var(--border-soft);
+        background: var(--surface-card); cursor: pointer; transition: all 0.12s ease;
+        user-select: none; -webkit-user-select: none;
+    }
+    .mt-color-swatch:hover { border-color: var(--text-muted); }
+    .mt-color-swatch.active { border-color: var(--dlsu-green); box-shadow: 0 0 0 2px rgba(10,92,54,0.15); }
+    .mt-color-swatch .swatch-dot {
+        width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.10);
+    }
+    .mt-color-swatch .swatch-label { font-size: 0.65rem; font-weight: 700; color: var(--text-main); white-space: nowrap; }
     /* ---------- Custom single-select dropdown (no native <select>) ---------- */
     .csel { position: relative; }
     .csel-trigger {
@@ -1345,6 +1389,7 @@
             <div class="toolbar">
                 <button class="btn btn-primary" data-once data-click="savePlantilla()">Save Plantilla</button>
                 <button class="btn" data-click="clearPlantilla()">Clear Grid</button>
+                <button class="btn" id="plantillaLockAllBtn" data-click="togglePlantillaLockAll()">Lock Grid</button>
                 <span class="sub" style="margin-left:auto;" id="plantillaOwnerLabel"></span>
             </div>
 
@@ -1353,13 +1398,8 @@
                 <div id="plantillaMemberCustom"></div>
             </div>
 
-            <div class="hint" style="margin-bottom:8px;">Click or drag across cells to paint your busy blocks. Free time is left empty.</div>
-            <div class="mt-legend" style="margin-top:10px;margin-bottom:12px;">
-                <span class="mt-legend-label">Free</span>
-                <span class="mt-legend-swatch" style="background:var(--surface-card);border:1px solid rgba(100,116,139,0.3);"></span>
-                <span class="mt-legend-swatch" style="background:rgba(239,68,68,0.35);border:1px solid rgba(239,68,68,0.65);"></span>
-                <span class="mt-legend-label">Busy</span>
-            </div>
+            <div class="hint" style="margin-bottom:8px;">Pick a color below, then click or drag across cells to paint your schedule. Use the white <strong>Not Going</strong> swatch to erase back to blank. All / Clear buttons act on one day at a time.</div>
+            <div class="mt-color-palette" id="plantillaPalette"></div>
             <div class="avail-scroll"><div id="plantillaGrid"></div></div>
 
             <div style="margin-top:24px;">
@@ -1519,13 +1559,15 @@
                     </h4>
                     <ul style="margin:0 0 12px;padding-left:20px;font-size:0.88rem;list-style-type:disc;">
                         <li style="margin-bottom:4px;">The <strong>Plantilla</strong> panel holds your <strong>weekly recurring availability</strong>: a Mon–Sat grid of half-hour cells from 7:00 AM to 11:00 PM. It's separate from one-off Meets scheduling.</li>
-                        <li style="margin-bottom:4px;">Paint your busy blocks by <strong>clicking a cell</strong> to toggle it, or <strong>dragging vertically within a day column</strong> to fill a stretch. Dragging sideways doesn't jump to other days.</li>
+                        <li style="margin-bottom:4px;">Pick a color from the palette, then <strong>click a cell</strong> to paint it or <strong>drag vertically within a day column</strong> to fill a stretch. Dragging sideways doesn't jump to other days.</li>
+                        <li style="margin-bottom:4px;">Colors tell the type of matter: <strong>Purple</strong> = Online class, <strong>Yellow</strong> = Face-to-face class, <strong>Green</strong> = Willing to go to campus, <strong>Blue</strong> = Personal matters. The white <strong>Not Going</strong> swatch paints a cell back to blank (i.e. unavailable). Use <strong>All</strong> or <strong>Clear</strong> under any day to act on every cell that day at once.</li>
+                        <li style="margin-bottom:4px;">Use the <strong>All</strong> button under a day to paint that whole day's column with your selected color, or <strong>Clear</strong> to wipe that day's cells.</li>
                         <li style="margin-bottom:4px;">On mobile the grid is wider than the screen — <strong>swipe left or right</strong> to scroll between days.</li>
                         <li style="margin-bottom:4px;">Hit <strong>Save Plantilla</strong> to push your changes to the sheet; <strong>Clear Grid</strong> wipes the cells of <strong>unlocked days only</strong>.</li>
-                        <li style="margin-bottom:4px;"><strong>Locks:</strong> tap the lock icon under a day's name to freeze that day — its busy and free cells can no longer be painted or edited by accident. Locks are remembered across visits; tap again to unlock.</li>
-                        <li style="margin-bottom:4px;"><strong>Unsaved changes are kept automatically.</strong> If you reload before saving, your painted cells are restored. Clicking Save clears that local copy once the grid is stored.</li>
+                        <li style="margin-bottom:4px;"><strong>Locks:</strong> tap the lock icon under a day's name to freeze that day — its cells can no longer be painted or edited by accident. <strong>Lock Grid</strong> freezes all six days at once and changes to <strong>Unlock Grid</strong> while active. The bulk lock applies only to your own schedule. Locks are remembered across visits; tap again to unlock.</li>
+                        <li style="margin-bottom:4px;"><strong>Unsaved changes are kept automatically.</strong> If you reload before saving, your painted cells and locks are restored. Clicking Save clears that local copy once the grid is stored.</li>
                         <li style="margin-bottom:4px;">Website Admins can preview another member's grid with the <strong>View member</strong> dropdown (your own name always sits on top). That preview is read-only — edits there won't be saved.</li>
-                        <li style="margin-bottom:4px;"><strong>Add Commitment</strong> (bottom of the Plantilla panel) is for one-off dates that don't repeat, e.g. exams or events. These also appear in the Calendar's day drawer.</li>
+                        <li style="margin-bottom:4px;"><strong>Add Commitment</strong> (bottom of the Plantilla panel) is for one-off dates that don't repeat, e.g. exams or events. These also appear in the Calendar's day drawer. Commitments remain saved after they pass, but rows more than two days old are hidden from the list.</li>
                     </ul>
                 </div>
 
@@ -3404,8 +3446,27 @@
     const PLANTILLA_END_MIN = 23 * 60;
     const PLANTILLA_STEP_MIN = 30;
 
+    // Paintable cell types. Keys are persisted to the sheet.
+    // "busy" is the legacy type (old single-color data) and stays internal.
+    // "unavailable" (Not Going) is white — painting with it clears a cell
+    // back to the blank/white default, acting as the eraser.
+    // paleBg/paleBorder are the washed-out look shown while dragging a fill.
+    const PLANTILLA_COLORS = {
+        "busy":        { label: "Busy",              accent: "#ef4444", bg: "rgba(239,68,68,0.45)", border: "rgba(239,68,68,0.85)", paleBg: "rgba(239,68,68,0.18)", paleBorder: "rgba(239,68,68,0.40)" },
+        "online":      { label: "Online Class",      accent: "#8b5cf6", bg: "rgba(139,92,246,0.45)", border: "rgba(139,92,246,0.85)", paleBg: "rgba(139,92,246,0.20)", paleBorder: "rgba(139,92,246,0.45)" },
+        "f2f":         { label: "Face-to-Face",      accent: "#ffcc00", bg: "rgba(255,204,0,0.45)", border: "rgba(255,204,0,0.85)", paleBg: "rgba(255,204,0,0.20)", paleBorder: "rgba(255,204,0,0.45)" },
+        "willing":     { label: "Willing to Go",     accent: "#22c55e", bg: "rgba(34,197,94,0.45)", border: "rgba(34,197,94,0.85)", paleBg: "rgba(34,197,94,0.20)", paleBorder: "rgba(34,197,94,0.45)" },
+        "personal":    { label: "Personal",          accent: "#007aff", bg: "rgba(0,122,255,0.45)", border: "rgba(0,122,255,0.85)", paleBg: "rgba(0,122,255,0.18)", paleBorder: "rgba(0,122,255,0.40)" },
+        "unavailable": { label: "Not Going",         accent: "#94a3b8", bg: "rgba(255,255,255,0.85)", border: "rgba(148,163,184,0.55)", paleBg: "rgba(148,163,184,0.18)", paleBorder: "rgba(148,163,184,0.30)" }
+    };
+    // User pickable palette order (legacy "busy" excluded). "unavailable"
+    // (Not Going) is the white eraser — painting a cell clears it back to
+    // blank/white, so there is no separate "Free" swatch.
+    const PLANTILLA_PALETTE = ["willing", "online", "f2f", "personal", "unavailable"];
+
     let plantillaViewEmail = "";
-    let plantillaSet = new Set();
+    let plantillaColorMap = new Map();
+    let plantillaColor = "unavailable";
     let plantillaDrag = null;
     let plantillaSaveBusy = false;
     let _conflictNotifSig = null;
@@ -3430,6 +3491,22 @@
             : '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>';
     }
+    function plantillaLockAllActive() { return PLANTILLA_DAYS.every(d => plantillaLocks.has(d)); }
+    function togglePlantillaLockAll() {
+        if (plantillaViewEmail !== userEmail) return;
+        if (plantillaLockAllActive()) PLANTILLA_DAYS.forEach(d => plantillaLocks.delete(d));
+        else PLANTILLA_DAYS.forEach(d => plantillaLocks.add(d));
+        savePlantillaLocks();
+        renderPlantillaGrid();
+        updatePlantillaLockAllBtn();
+    }
+    function updatePlantillaLockAllBtn() {
+        const btn = $("plantillaLockAllBtn");
+        if (!btn) return;
+        if (plantillaViewEmail !== userEmail) { btn.style.display = "none"; return; }
+        btn.style.display = "";
+        btn.textContent = plantillaLockAllActive() ? "Unlock Grid" : "Lock Grid";
+    }
     function plantillaDraftKey(email) { return "ebdb_plantilla_draft_" + (email || ""); }
     function savePlantillaDraft(email) {
         if (!email || email !== userEmail) return;
@@ -3441,9 +3518,7 @@
             if (!raw) return null;
             const grid = JSON.parse(raw);
             if (!grid || typeof grid !== "object") return null;
-            const out = {};
-            PLANTILLA_DAYS.forEach(d => { out[d] = Array.isArray(grid[d]) ? grid[d].slice() : []; });
-            return out;
+            return normalizePlantillaGrid(grid);
         } catch (e) { return null; }
     }
     function clearPlantillaDraft(email) {
@@ -3456,12 +3531,30 @@
         const di = dayIdxFromISO(iso);
         return (di >= 1 && di <= 6) ? PLANTILLA_DAYS[di - 1] : "";
     }
+    // Normalize any stored grid (new object { time: colorType } or legacy
+    // array ["HH:MM", ...]) into the object format used across the app.
+    function normalizePlantillaGrid(grid) {
+        const out = {};
+        PLANTILLA_DAYS.forEach(d => {
+            out[d] = {};
+            const gd = (grid && grid[d]) || null;
+            if (!gd) return;
+            if (typeof gd === "object" && !Array.isArray(gd)) {
+                Object.keys(gd).forEach(t => {
+                    const ct = String(gd[t] || "");
+                    if (ct && PLANTILLA_COLORS[ct]) out[d][t] = ct;
+                });
+            } else if (Array.isArray(gd)) {
+                gd.forEach(t => {
+                    if (typeof t === "string" && PLANTILLA_COLORS.busy) out[d][t] = "busy";
+                });
+            }
+        });
+        return out;
+    }
     function plantillaGridFor(email) {
         const rec = (fullData.plantillas || []).find(p => p.email === email);
-        const grid = (rec && rec.grid) || {};
-        const out = {};
-        PLANTILLA_DAYS.forEach(d => { out[d] = Array.isArray(grid[d]) ? grid[d].slice() : []; });
-        return out;
+        return normalizePlantillaGrid((rec && rec.grid) || {});
     }
     function plantillaPerson() {
         const email = plantillaViewEmail || userEmail || "";
@@ -3469,50 +3562,27 @@
         return { email: email, name: (rec && (rec.fullName || rec.email)) || email };
     }
 
-    function plantillaScheduleText(email) {
-        const grid = plantillaGridFor(email);
-        const parts = [];
-        PLANTILLA_DAYS.forEach(d => {
-            const times = (grid[d] || []).slice().sort();
-            if (!times.length) return;
-            const ranges = [];
-            let curS = null, prevM = null;
-            times.forEach(t => {
-                const m = hhmmToMin(t);
-                if (curS === null) { curS = prevM = m; }
-                else if (m === prevM + PLANTILLA_STEP_MIN) { prevM = m; }
-                else {
-                    ranges.push(fmtTime(minToHHMM(curS)) + "–" + fmtTime(minToHHMM(prevM + PLANTILLA_STEP_MIN)));
-                    curS = prevM = m;
-                }
-            });
-            if (curS !== null) ranges.push(fmtTime(minToHHMM(curS)) + "–" + fmtTime(minToHHMM(prevM + PLANTILLA_STEP_MIN)));
-            parts.push(capDay(d) + " " + ranges.join(", "));
-        });
-        if (!parts.length) return "No busy blocks";
-        const full = parts.join(" · ");
-        return full.length > 160 ? parts.slice(0, 3).join(" · ") + " …" : full;
-    }
-
     function updatePlantillaOwnerLabel() {
         const label = $("plantillaOwnerLabel");
         if (!label) return;
         const email = plantillaViewEmail || userEmail || "";
         const person = plantillaPerson();
-        const sched = plantillaScheduleText(email);
         if (email === userEmail) { label.textContent = ""; return; }
-        const viewName = /@/.test(person.name) ? "" : person.name + " · ";
-        label.textContent = "Viewing " + viewName + sched + " — read-only";
+        const viewName = /@/.test(person.name) ? "" : person.name + " ";
+        label.textContent = "Viewing " + viewName + "— read-only";
     }
 
     // One normalized lookup: { email: { day: Set<startMinutes> } }
     function plantillaBusyMap() {
         const map = {};
         (fullData.plantillas || []).forEach(p => {
+            const norm = normalizePlantillaGrid(p.grid);
             const day = {};
             PLANTILLA_DAYS.forEach(d => {
                 day[d] = new Set();
-                (p.grid && Array.isArray(p.grid[d]) ? p.grid[d] : []).forEach(t => {
+                Object.keys(norm[d] || {}).forEach(t => {
+                    const ct = norm[d][t];
+                    if (ct === "willing") return;
                     const m = hhmmToMin(t);
                     if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) day[d].add(m);
                 });
@@ -3527,11 +3597,11 @@
     }
 
     function plantillaRefreshSet() {
-        plantillaSet = new Set();
+        plantillaColorMap = new Map();
         const grid = plantillaGridFor(plantillaPerson().email);
-        PLANTILLA_DAYS.forEach(d => (grid[d] || []).forEach(t => {
+        PLANTILLA_DAYS.forEach(d => Object.keys(grid[d] || {}).forEach(t => {
             const m = hhmmToMin(t);
-            if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) plantillaSet.add(plantillaKey(d, m));
+            if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) plantillaColorMap.set(plantillaKey(d, m), grid[d][t] || "busy");
         }));
     }
 
@@ -3568,56 +3638,137 @@
         if (plantillaViewEmail === userEmail) {
             const draft = loadPlantillaDraft(userEmail);
             if (draft) {
-                PLANTILLA_DAYS.forEach(d => (draft[d] || []).forEach(t => {
+                PLANTILLA_DAYS.forEach(d => Object.keys(draft[d] || {}).forEach(t => {
                     const m = hhmmToMin(t);
-                    if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) plantillaSet.add(plantillaKey(d, m));
+                    if (m >= 0 && m >= PLANTILLA_START_MIN && m < PLANTILLA_END_MIN) plantillaColorMap.set(plantillaKey(d, m), draft[d][t] || "busy");
                 }));
             }
         }
+        plantillaRenderPalette();
         renderPlantillaGrid();
         renderCommitments();
+    }
+
+    function plantillaRenderPalette() {
+        const host = $("plantillaPalette");
+        if (!host) return;
+        host.innerHTML = PLANTILLA_PALETTE.map(c => {
+            const color = PLANTILLA_COLORS[c];
+            const dotStyle = `background:${color.bg};border:1px solid ${color.border};`;
+            const label = color.label;
+            const tip = c === "unavailable"
+                ? "White = Not going — erases a cell back to blank"
+                : (c === "willing"
+                    ? "Free / available for meets"
+                    : "Paint as " + label);
+            return `<button type="button" class="mt-color-swatch${plantillaColor === c ? " active" : ""}" data-c="${c}" title="${tip}"><span class="swatch-dot" style="${dotStyle}"></span><span class="swatch-label">${label}</span></button>`;
+        }).join("");
+        Array.from(host.children).forEach(function (el) {
+            el.addEventListener("click", function () {
+                plantillaColor = el.getAttribute("data-c");
+                plantillaRenderPalette();
+            });
+        });
     }
 
     function renderPlantillaGrid() {
         const gridEl = $("plantillaGrid");
         if (!gridEl) return;
+        const readonly = plantillaViewEmail !== userEmail;
         const rowCount = (PLANTILLA_END_MIN - PLANTILLA_START_MIN) / PLANTILLA_STEP_MIN;
         let html = '<div class="pt-wrap"><div class="pt-grid" id="ptGrid" style="grid-template-columns:64px repeat(6, minmax(44px, 1fr));">';
         html += '<div></div>' + PLANTILLA_DAYS.map(d => `<div class="pt-head">${capDay(d)}</div>`).join("");
-        html += '<div></div>' + PLANTILLA_DAYS.map(d => `<div class="pt-lock-wrap"><button type="button" class="pt-lock${plantillaLocks.has(d) ? " locked" : ""}" data-ld="${d}" title="${plantillaLocks.has(d) ? "Unlock " : "Lock "}${capDay(d)}">${plantillaLockIcon(plantillaLocks.has(d))}</button></div>`).join("");
+        html += '<div></div>' + PLANTILLA_DAYS.map(d => {
+            const locked = plantillaLocks.has(d);
+            return `<div class="pt-day-actions">` +
+                `<button type="button" class="pt-day-all" data-ld="${d}" title="Paint whole ${capDay(d)} with the selected color"${(locked || readonly) ? " disabled" : ""}>All</button>` +
+                `<button type="button" class="pt-day-clear" data-ld="${d}" title="Clear all ${capDay(d)} cells"${(locked || readonly) ? " disabled" : ""}>Clear</button>` +
+                `</div>`;
+        }).join("");
+        html += '<div></div>' + PLANTILLA_DAYS.map(d =>
+            readonly
+                ? '<div class="pt-lock-wrap"></div>'
+                : `<div class="pt-lock-wrap"><button type="button" class="pt-lock${plantillaLocks.has(d) ? " locked" : ""}" data-ld="${d}" title="${plantillaLocks.has(d) ? "Unlock " : "Lock "}${capDay(d)}">${plantillaLockIcon(plantillaLocks.has(d))}</button></div>`
+        ).join("");
         for (let si = 0; si < rowCount; si++) {
             const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
             html += `<div class="pt-time">${t % 60 === 0 ? escHtml(fmtTime(minToHHMM(t))) : ""}</div>`;
             PLANTILLA_DAYS.forEach((d, di) => {
-                const on = plantillaSet.has(plantillaKey(d, t));
-                const locked = plantillaLocks.has(d);
-                html += `<div class="pt-cell${on ? " busy" : ""}${locked ? " locked" : ""}" data-pd="${d}" data-pdi="${di}" data-psi="${si}" data-pt="${t}"></div>`;
+                const colorType = plantillaColorMap.get(plantillaKey(d, t)) || "";
+                const cls = colorType ? " busy" + (colorType && colorType !== "busy" ? "-" + colorType : "") : "";
+                const locked = !readonly && plantillaLocks.has(d);
+                html += `<div class="pt-cell${cls}${locked ? " locked" : ""}" data-pd="${d}" data-pdi="${di}" data-psi="${si}" data-pt="${t}"></div>`;
             });
         }
         html += '</div></div>';
         gridEl.innerHTML = html;
         plantillaBindGrid();
+        updatePlantillaLockAllBtn();
     }
 
-    function plantillaPaintCell(di, si) {
+    function plantillaPaintCell(di, si, colorTypeArg) {
         const day = PLANTILLA_DAYS[di];
+        if (plantillaViewEmail !== userEmail) return;
         if (plantillaLocks.has(day)) return;
         const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
         const key = plantillaKey(day, t);
-        if (plantillaDrag && plantillaDrag.mode === "MARK_BUSY") plantillaSet.add(key);
-        else plantillaSet.delete(key);
+        const colorType = (colorTypeArg === undefined
+            ? (plantillaDrag ? plantillaDrag.color : (plantillaColor === "unavailable" ? null : plantillaColor))
+            : colorTypeArg) || null;
+        if (colorType) plantillaColorMap.set(key, colorType);
+        else plantillaColorMap.delete(key);
         const cell = document.querySelector(`#ptGrid .pt-cell[data-pdi="${di}"][data-psi="${si}"]`);
-        if (cell) cell.classList.toggle("busy", !!(plantillaDrag && plantillaDrag.mode === "MARK_BUSY"));
+        if (cell) {
+            ["busy", "busy-online", "busy-f2f", "busy-willing", "busy-personal", "busy-unavailable"].forEach(c => cell.classList.remove(c));
+            if (colorType) cell.classList.add(colorType === "busy" ? "busy" : "busy-" + colorType);
+        }
         if (plantillaViewEmail === userEmail) savePlantillaDraft(userEmail);
+    }
+
+    function plantillaPaintAll(di) {
+        const day = PLANTILLA_DAYS[di];
+        if (plantillaViewEmail !== userEmail) return;
+        if (plantillaLocks.has(day)) return;
+        const colorType = plantillaColor === "unavailable" ? null : plantillaColor;
+        for (let si = 0; si < (PLANTILLA_END_MIN - PLANTILLA_START_MIN) / PLANTILLA_STEP_MIN; si++) {
+            const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
+            const key = plantillaKey(day, t);
+            if (colorType) plantillaColorMap.set(key, colorType);
+            else plantillaColorMap.delete(key);
+        }
+        if (plantillaViewEmail === userEmail) savePlantillaDraft(userEmail);
+    }
+
+    function plantillaClearDay(di) {
+        const day = PLANTILLA_DAYS[di];
+        if (plantillaViewEmail !== userEmail) return;
+        if (plantillaLocks.has(day)) return;
+        const rowCount = (PLANTILLA_END_MIN - PLANTILLA_START_MIN) / PLANTILLA_STEP_MIN;
+        for (let si = 0; si < rowCount; si++) {
+            const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
+            plantillaColorMap.delete(plantillaKey(day, t));
+        }
+        if (plantillaViewEmail === userEmail) savePlantillaDraft(userEmail);
+    }
+
+    function plantillaPaleStyle(colorType) {
+        const c = colorType ? PLANTILLA_COLORS[colorType] : null;
+        if (!c) return { bg: "rgba(100,116,139,0.16)", border: "rgba(100,116,139,0.35)" };
+        return { bg: c.paleBg, border: c.paleBorder };
     }
 
     function plantillaPaintRect(di, si) {
         const dd = plantillaDrag.startDi;
         const i0 = Math.min(plantillaDrag.startI, si), i1 = Math.max(plantillaDrag.startI, si);
+        const pale = plantillaPaleStyle(plantillaDrag.color);
         for (let ii = i0; ii <= i1; ii++) {
-            plantillaPaintCell(dd, ii);
+            plantillaPaintCell(dd, ii, plantillaDrag.color);
             const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${dd}"][data-psi="${ii}"]`);
-            if (el && !plantillaLocks.has(PLANTILLA_DAYS[dd])) el.classList.add("dragging");
+            if (el && !plantillaLocks.has(PLANTILLA_DAYS[dd])) {
+                el.classList.add("dragging");
+                el.style.background = pale.bg;
+                el.style.borderColor = pale.border;
+            }
         }
     }
 
@@ -3628,26 +3779,40 @@
         grid.addEventListener("pointerdown", function (e) {
             if (e.button !== 0) return;
             const lockBtn = e.target.closest ? e.target.closest(".pt-lock") : null;
-            if (lockBtn) return;
+            const allBtn = e.target.closest ? e.target.closest(".pt-day-all") : null;
+            const clearBtn = e.target.closest ? e.target.closest(".pt-day-clear") : null;
+            if (lockBtn || allBtn || clearBtn) return;
             const cell = e.target.closest ? e.target.closest(".pt-cell") : null;
             if (!cell) return;
             const di = parseInt(cell.getAttribute("data-pdi"), 10);
             const si = parseInt(cell.getAttribute("data-psi"), 10);
             if (isNaN(di) || isNaN(si)) return;
             if (plantillaLocks.has(PLANTILLA_DAYS[di])) return;
-            const t = PLANTILLA_START_MIN + si * PLANTILLA_STEP_MIN;
-            const isBusy = plantillaSet.has(plantillaKey(PLANTILLA_DAYS[di], t));
-            plantillaDrag = { down: true, active: false, mode: isBusy ? "MARK_FREE" : "MARK_BUSY", startDi: di, startI: si, sx: e.clientX, sy: e.clientY };
+            if (plantillaViewEmail !== userEmail) return;
+            plantillaDrag = { down: true, active: false, color: plantillaColor === "unavailable" ? null : plantillaColor, startDi: di, startI: si, sx: e.clientX, sy: e.clientY };
             e.preventDefault();
         });
         grid.addEventListener("click", function (e) {
             const lockBtn = e.target.closest ? e.target.closest(".pt-lock") : null;
-            if (!lockBtn) return;
-            const day = lockBtn.getAttribute("data-ld");
+            const allBtn = e.target.closest ? e.target.closest(".pt-day-all") : null;
+            const clearBtn = e.target.closest ? e.target.closest(".pt-day-clear") : null;
+            if (!lockBtn && !allBtn && !clearBtn) return;
+            const dayBtn = lockBtn || allBtn || clearBtn;
+            const day = dayBtn.getAttribute("data-ld");
             if (!day) return;
-            if (plantillaLocks.has(day)) plantillaLocks.delete(day);
-            else plantillaLocks.add(day);
-            savePlantillaLocks();
+            if (lockBtn) {
+                if (plantillaViewEmail !== userEmail) return;
+                if (plantillaLocks.has(day)) plantillaLocks.delete(day);
+                else plantillaLocks.add(day);
+                savePlantillaLocks();
+                renderPlantillaGrid();
+                return;
+            }
+            if (dayBtn.disabled) return;
+            const di = PLANTILLA_DAYS.indexOf(day);
+            if (di < 0) return;
+            if (allBtn) plantillaPaintAll(di);
+            if (clearBtn) plantillaClearDay(di);
             renderPlantillaGrid();
         });
         grid.addEventListener("pointerenter", function (e) {
@@ -3665,9 +3830,14 @@
                 const dx = e.clientX - plantillaDrag.sx, dy = e.clientY - plantillaDrag.sy;
                 if (dx * dx + dy * dy < 36) return;
                 plantillaDrag.active = true;
-                plantillaPaintCell(plantillaDrag.startDi, plantillaDrag.startI);
+                plantillaPaintCell(plantillaDrag.startDi, plantillaDrag.startI, plantillaDrag.color);
                 const el = document.querySelector(`#ptGrid .pt-cell[data-pdi="${plantillaDrag.startDi}"][data-psi="${plantillaDrag.startI}"]`);
-                if (el && !plantillaLocks.has(PLANTILLA_DAYS[plantillaDrag.startDi])) el.classList.add("dragging");
+                if (el && !plantillaLocks.has(PLANTILLA_DAYS[plantillaDrag.startDi])) {
+                    const pale = plantillaPaleStyle(plantillaDrag.color);
+                    el.classList.add("dragging");
+                    el.style.background = pale.bg;
+                    el.style.borderColor = pale.border;
+                }
             }
             const el = document.elementFromPoint(e.clientX, e.clientY);
             const cell = el && el.closest ? el.closest(".pt-cell") : null;
@@ -3682,9 +3852,13 @@
     function endPlantillaDrag(allowTap) {
         if (plantillaDrag) {
             const drag = plantillaDrag;
-            document.querySelectorAll("#ptGrid .pt-cell.dragging").forEach(el => el.classList.remove("dragging"));
+            document.querySelectorAll("#ptGrid .pt-cell.dragging").forEach(el => {
+                el.classList.remove("dragging");
+                el.style.background = "";
+                el.style.borderColor = "";
+            });
             plantillaDrag = null;
-            if (allowTap !== false && drag.down && !drag.active) plantillaPaintCell(drag.startDi, drag.startI);
+            if (allowTap !== false && drag.down && !drag.active) plantillaPaintCell(drag.startDi, drag.startI, drag.color);
         }
     }
     document.addEventListener("pointerup", function () { endPlantillaDrag(true); });
@@ -3693,11 +3867,11 @@
 
     function serializePlantilla() {
         const grid = {};
-        PLANTILLA_DAYS.forEach(d => { grid[d] = []; });
-        plantillaSet.forEach(k => {
+        PLANTILLA_DAYS.forEach(d => { grid[d] = {}; });
+        plantillaColorMap.forEach((colorType, k) => {
             const idx = k.indexOf("-");
             const day = k.slice(0, idx), tm = k.slice(idx + 1);
-            if (grid[day]) grid[day].push(tm);
+            if (grid[day]) grid[day][tm] = colorType;
         });
         return grid;
     }
@@ -3732,14 +3906,14 @@
             showAlert("Read-only", "You're viewing another member's plantilla. Switch to your own name first.");
             return;
         }
-        showConfirm("Clear all busy blocks on your plantilla? (locked days are kept)").then(function (yes) {
+        showConfirm("Clear all painted cells on your plantilla? (locked days are kept)").then(function (yes) {
             if (!yes) return;
-            const kept = new Set();
-            plantillaSet.forEach(k => {
+            const kept = new Map();
+            plantillaColorMap.forEach((colorType, k) => {
                 const idx = k.indexOf("-");
-                if (idx >= 0 && plantillaLocks.has(k.slice(0, idx))) kept.add(k);
+                if (idx >= 0 && plantillaLocks.has(k.slice(0, idx))) kept.set(k, colorType);
             });
-            plantillaSet = kept;
+            plantillaColorMap = kept;
             renderPlantillaGrid();
             savePlantillaDraft(userEmail);
             toast(plantillaLocks.size ? "Grid cleared — locked days kept. Remember to save." : "Grid cleared — remember to save.");
@@ -4133,9 +4307,13 @@
             ? (fullData.commitments || []).sort((a, b) => a.date.localeCompare(b.date))
             : mine;
         const list = fullData.isManager ? all : mine;
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 2);
+        const cutoffISO = isoFromDate(cutoff);
+        const visibleList = list.filter(c => !c.date || String(c.date) >= cutoffISO);
 
-        $("commitmentList").innerHTML = list.length
-            ? list.map(c => `
+        $("commitmentList").innerHTML = visibleList.length
+            ? visibleList.map(c => `
                 <div class="item-row">
                     <div class="grow">
                         <h4>${escHtml(c.type || "Commitment")} <span class="tbadge type-badge-${escHtml(c.type)}">${escHtml(c.type || "Other")}</span></h4>
@@ -4151,7 +4329,7 @@
                         </button>
                     </div>
                 </div>`).join("")
-            : '<div class="empty-state">No commitments recorded. Add one-off dates that may conflict with activities.</div>';
+            : '<div class="empty-state">No current commitments. Add one-off dates that may conflict with activities.</div>';
     }
 
     function openCommitmentModal(id) {
